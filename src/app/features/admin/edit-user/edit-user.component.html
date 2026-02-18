@@ -1,0 +1,92 @@
+<div class="edit-user-page">
+  <div class="form-container">
+    <h2>Edit User</h2>
+
+    <form [formGroup]="editUserForm" (ngSubmit)="onSubmit()" class="edit-user-form">
+
+      <!-- Username -->
+      <div class="form-group">
+        <label for="username">Username</label>
+        <input
+          id="username"
+          type="text"
+          formControlName="userName"
+          placeholder="Enter username"
+        />
+      </div>
+
+      <!-- Password (optional) -->
+      <div class="form-group">
+        <label for="password">Password <small>(leave blank to keep current)</small></label>
+        <input
+          id="password"
+          type="password"
+          formControlName="password"
+          placeholder="Enter new password (optional)"
+        />
+      </div>
+
+      <!-- Full Name -->
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input
+          id="fullName"
+          type="text"
+          formControlName="fullName"
+          placeholder="Enter full name"
+        />
+      </div>
+
+      <!-- Email -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          formControlName="email"
+          placeholder="Enter email"
+        />
+      </div>
+
+      <!-- Phone -->
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input
+          id="phone"
+          type="text"
+          formControlName="phone"
+          placeholder="Enter phone number"
+        />
+      </div>
+
+      <!-- Role -->
+      <div class="form-group">
+        <label for="role">Role</label>
+        <select id="role" formControlName="roleId">
+          <option value="" disabled>Select role</option>
+          <option *ngFor="let role of roles" [value]="role.roleId">
+            {{ role.roleName }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button
+          type="submit"
+          [disabled]="editUserForm.invalid || loading"
+          class="btn-confirm"
+        >
+          {{ loading ? 'Saving...' : 'Update' }}
+        </button>
+        <button type="button" (click)="onCancel()" class="btn-cancel">
+          Cancel
+        </button>
+      </div>
+
+      <!-- Messages -->
+      <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    </form>
+  </div>
+</div>

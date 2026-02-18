@@ -1,0 +1,161 @@
+.dashboard-bg {
+  min-height: 100vh;
+  padding: 40px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+}
+
+.full-table-wrapper {
+  width: 100%;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  h2 {
+    font-weight: 600;
+    color: #111827;
+  }
+}
+
+.search-box {
+  position: relative;
+
+  input {
+    padding: 10px 40px;
+    border-radius: 50px;
+    border: 1px solid #e5e7eb;
+    width: 250px;
+    outline: none;
+  }
+
+  i {
+    position: absolute;
+    top: 50%;
+    left: 15px;
+    transform: translateY(-50%);
+    color: #9ca3af;
+  }
+}
+
+/* Modern Table */
+.table-modern {
+  border-collapse: collapse;
+}
+
+.table-modern thead {
+  background: #f3f4f6;
+}
+
+.table-modern th {
+  padding: 14px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #6b7280;
+}
+
+.table-modern td {
+  padding: 14px;
+  vertical-align: middle;
+}
+
+.table-modern tbody tr {
+  transition: 0.2s;
+}
+
+.table-modern tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* Badges */
+.badge {
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 0.8rem;
+  font-weight: 600;
+
+  &.active {
+    background: rgba(34,197,94,0.15);
+    color: #16a34a;
+  }
+
+  &.inactive {
+    background: rgba(239,68,68,0.15);
+    color: #dc2626;
+  }
+
+  &.role {
+    background: rgba(79,70,229,0.15);
+    color: #4f46e5;
+  }
+}
+
+/* Action Button */
+.action-btn {
+  background: #f3f4f6;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+}
+
+.action-btn:hover {
+  background: #e5e7eb;
+}
+
+/* Pagination */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 2rem;
+}
+
+.page-btn {
+  border: none;
+  background: #f3f4f6;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.page-btn:hover {
+  background: #e5e7eb;
+}
+
+.page-btn.active {
+  background: #4f46e5;
+  color: #fff;
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.action-btn.edit-btn {
+  background-color: #28a745; /* green button background */
+  border: none;
+  color: white; /* icon color */
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-btn.edit-btn i {
+  font-size: 16px;
+}
+
+.action-btn.edit-btn:hover {
+  background-color: #218838; /* slightly darker green */
+  transform: scale(1.1);
+}

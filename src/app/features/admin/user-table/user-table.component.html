@@ -1,0 +1,90 @@
+<div class="dashboard-bg">
+  <div class="full-table-wrapper">
+
+    <!-- Header -->
+    <div class="table-header">
+      <h2><i class="bi bi-people-fill me-2"></i>Users Management</h2>
+
+      <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          placeholder="Search users..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearch()"
+        />
+      </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive" *ngIf="pagedUsers.length">
+      <table class="table table-modern">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Full Name</th>
+            <th>Status</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr *ngFor="let user of pagedUsers; let i = index">
+            <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+            <td class="fw-semibold">{{ user.userName }}</td>
+            <td><span class="badge role">{{ user.roleName }}</span></td>
+            <td>{{ user.fullName }}</td>
+            <td>
+              <button
+                class="badge"
+                [ngClass]="user.isActive ? 'active' : 'inactive'"
+                (click)="toggleStatus(user)"
+              >
+                {{ user.isActive ? 'Active' : 'Inactive' }}
+              </button>
+            </td>
+            <td><a [href]="'mailto:' + user.email">{{ user.email }}</a></td>
+            <td><a [href]="'tel:' + user.phone">{{ user.phone }}</a></td>
+            <td class="text-center">
+              <button class="action-btn edit-btn" (click)="editUser(user.userId)">
+  <i class="bi bi-pencil-fill"></i>
+</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination Numbers Beside Each Other -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
+
+      <button
+        class="page-btn"
+        (click)="goToPage(currentPage - 1)"
+        [disabled]="currentPage === 1">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <button
+        *ngFor="let page of pages"
+        class="page-btn"
+        [class.active]="page === currentPage"
+        (click)="goToPage(page)">
+        {{ page }}
+      </button>
+
+      <button
+        class="page-btn"
+        (click)="goToPage(currentPage + 1)"
+        [disabled]="currentPage === totalPages">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+
+    </div>
+
+  </div>
+</div>
