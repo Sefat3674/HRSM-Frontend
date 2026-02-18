@@ -56,11 +56,12 @@ export class LoginComponent {
           localStorage.setItem('fullName', res.fullName);
           localStorage.setItem('email', res.email);
           localStorage.setItem('userName', res.userName);
+          localStorage.setItem('phone', res.phone);
         }
 
         // Role-based navigation
         if (res.roleName === 'Admin') {
-          this.router.navigate(['/admin/dashboard']);
+          this.router.navigate(['/user/dashboard']);
         } else {
           this.router.navigate(['/user/dashboard']);
         }

@@ -1,0 +1,96 @@
+.dashboard-bg {
+  min-height: 100vh;       /* Full viewport height */
+  padding: 2rem;
+  background: #f0f4ff;
+  display: flex;
+  flex-direction: column;
+}
+
+.full-table-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  
+  flex: 1;                  /* Take remaining height */
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;         /* Keep table contained */
+}
+
+/* Make the table scrollable if too long */
+.table-responsive {
+  flex: 1;                  /* Fill remaining space in wrapper */
+  overflow-y: auto;         /* Vertical scroll for long table */
+}
+
+/* Sticky header so it stays visible while scrolling */
+.table-modern thead th {
+  position: sticky;
+  top: 0;
+  background: #f5f7fa;      /* Keep header background */
+  z-index: 10;
+}
+
+/* Table Styles */
+.table-modern {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-modern th {
+  padding: 12px;
+  font-weight: 600;
+  text-align: left;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.table-modern td {
+  padding: 12px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background-color 0.3s;
+}
+
+.table-modern tbody tr:hover {
+  background: #f9fbff;
+}
+
+/* Text highlight */
+.late-text {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+.early-text {
+  color: #dc3545;
+  font-weight: 500;
+}
+
+/* Status Badge */
+.badge-custom {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.present {
+  background: #d4edda;
+  color: #155724;
+}
+
+.absent {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.late {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.no-data {
+  background: #e2e3e5;
+  color: #383d41;
+}

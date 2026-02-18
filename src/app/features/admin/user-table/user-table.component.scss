@@ -1,15 +1,25 @@
 .dashboard-bg {
   min-height: 100vh;
   padding: 40px;
-  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  background: linear-gradient(135deg, #acbef3, #aeadb1);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .full-table-wrapper {
   width: 100%;
-  background: #fff;
+  max-width: 100%;
+  background: #dbddf1;
   padding: 2rem;
   border-radius: 16px;
   box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+}
+
+.back-btn-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .table-header {
@@ -30,7 +40,7 @@
   input {
     padding: 10px 40px;
     border-radius: 50px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid #555657;
     width: 250px;
     outline: none;
   }
@@ -46,6 +56,7 @@
 
 /* Modern Table */
 .table-modern {
+  width: 100%;
   border-collapse: collapse;
 }
 
@@ -102,10 +113,29 @@
   border: none;
   padding: 6px 10px;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .action-btn:hover {
   background: #e5e7eb;
+}
+
+.action-btn.edit-btn {
+  background-color: #033d11;
+  color: rgb(247, 218, 218);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.action-btn.edit-btn i {
+  font-size: 16px;
+}
+
+.action-btn.edit-btn:hover {
+  background-color: #218838;
+  transform: scale(1.1);
 }
 
 /* Pagination */
@@ -138,24 +168,11 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-.action-btn.edit-btn {
-  background-color: #28a745; /* green button background */
-  border: none;
-  color: white; /* icon color */
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.action-btn.edit-btn i {
-  font-size: 16px;
-}
-
-.action-btn.edit-btn:hover {
-  background-color: #218838; /* slightly darker green */
-  transform: scale(1.1);
+/* No Users */
+.no-users {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-weight: 500;
 }

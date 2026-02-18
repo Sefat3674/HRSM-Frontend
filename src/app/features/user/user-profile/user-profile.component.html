@@ -1,0 +1,38 @@
+<div class="spinner-container" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Loading user info...</p>
+</div>
+
+<div class="error-msg" *ngIf="!loading && error">
+  {{ error }}
+</div>
+
+<div class="profile-card" *ngIf="!loading && user">
+  <div class="profile-header">
+    <img [src]="avatarUrl" alt="Avatar" class="avatar">
+    <h2>{{ user.fullName }}</h2>
+    <p class="role-badge">{{ user.roleName }}</p>
+  </div>
+
+  <div class="profile-details">
+    <p><i class="fas fa-user"></i> <strong>Username:</strong> {{ user.userName }}</p>
+    <p><i class="fas fa-envelope"></i> <strong>Email:</strong> {{ user.email }}</p>
+    <p><i class="fas fa-phone"></i> <strong>Phone:</strong> {{ user.phone }}</p>
+    <p>
+      <i class="fas fa-circle"></i> <strong>Status:</strong>
+      <span [class.active]="user.isActive" [class.inactive]="!user.isActive">
+        {{ user.isActive ? 'Active' : 'Inactive' }}
+      </span>
+    </p>
+  </div>
+
+  <div class="user-nav">
+    <a 
+      [routerLink]="user.roleName === 'Admin' ? '/admin/dashboard' : '/user/dashboard'" 
+      class="btn btn-primary">
+      Dashboard
+    </a>
+
+    <a class="btn btn-logout" (click)="logout()">Logout</a>
+  </div>
+</div>

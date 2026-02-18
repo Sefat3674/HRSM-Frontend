@@ -1,0 +1,205 @@
+.user-dashboard-container {
+  display: flex;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: linear-gradient(160deg, #eef2ff, #dbeafe);
+  color: #1f2937;
+}
+
+/* ================= SIDEBAR ================= */
+.sidebar {
+  width: 230px;
+  background: linear-gradient(180deg, #4f46e5, #4338ca);
+  color: #fff;
+  padding: 1rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+  box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+  border-radius: 0 16px 16px 0;
+
+  &.collapsed {
+    width: 70px;
+
+    .sidebar-buttons {
+      display: none;
+    }
+  }
+
+  /* Toggle Button */
+  .toggle-btn {
+    align-self: flex-end;
+    margin-bottom: 1.5rem;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 50%;
+    width: 38px;
+    height: 38px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: scale(1.05);
+    }
+  }
+
+  /* Sidebar Buttons */
+  .sidebar-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    .btn {
+      background: rgba(255, 255, 255, 0.15);
+      border: none;
+      padding: 0.7rem 1.2rem;
+      border-radius: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      color: #fff;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(5px);
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(4px);
+      }
+
+      &.active {
+        background: #ffffff;
+        color: #4338ca;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    .btn-logout {
+      background: #ef4444;
+
+      &:hover {
+        background: #dc2626;
+      }
+    }
+  }
+}
+
+/* ================= MAIN CONTENT ================= */
+.main-content {
+  flex: 1;
+  padding: 2rem 3rem;
+  overflow-y: auto;
+  background: #f9fafb;
+  border-radius: 20px;
+  margin: 1.2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= PAGE TITLE ================= */
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #4f46e5;
+}
+
+/* ================= DASHBOARD CARDS ================= */
+.dashboard-cards {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #ffffff;
+  padding: 25px;
+  width: 260px;
+  border-radius: 18px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  h3 {
+    color: #4f46e5;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+/* ================= ATTENDANCE ================= */
+.attendance-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.attendance-user-info {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  font-size: 1.1rem;
+}
+
+.user-info-item {
+  background: #eef2ff;
+  padding: 12px 22px;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #4338ca;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* ================= SPINNER ================= */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+
+  .spinner {
+    border: 6px solid #f3f3f3;
+    border-top: 6px solid #4f46e5;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+  }
+
+  p {
+    font-size: 1.1rem;
+    color: #555;
+  }
+}
+
+.error-msg {
+  color: #ef4444;
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

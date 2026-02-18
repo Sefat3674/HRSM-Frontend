@@ -1,0 +1,48 @@
+<div class="github-wrapper">
+
+  <!-- Month Header -->
+  <div class="months">
+    <span style="grid-column-start: 1"></span> <!-- empty to align first week -->
+    <span *ngFor="let month of monthLabels"
+          [style.grid-column-start]="month.weekIndex + 1">
+      {{ month.month }}
+    </span>
+  </div>
+
+  <div class="calendar-container">
+    <!-- Day Labels -->
+    <div class="days">
+      <span>Sun</span>
+      <span>Mon</span>
+      <span>Tue</span>
+      <span>Wed</span>
+      <span>Thu</span>
+      <span>Fri</span>
+      <span>Sat</span>
+    </div>
+
+    <!-- Calendar Grid -->
+    <div class="calendar-grid">
+      <ng-container *ngFor="let week of calendarWeeks; let col = index">
+        <div *ngFor="let day of week"
+             class="calendar-cell"
+             [ngClass]="getStatusClass(day.status)"
+             [style.grid-row]="day.row"
+             [style.grid-column]="col + 1"
+             [attr.data-date]="day.date | date:'mediumDate'">
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <span>Less</span>
+    <div class="box empty"></div>
+    <div class="box present"></div>
+    <div class="box late"></div>
+    <div class="box absent"></div>
+    <span>More</span>
+  </div>
+
+</div>

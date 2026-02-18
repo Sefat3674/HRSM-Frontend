@@ -1,6 +1,13 @@
 <div class="dashboard-bg">
   <div class="full-table-wrapper">
 
+    <!-- Back Button (Sticky Top) -->
+    <div class="back-btn-wrapper mb-4">
+      <button class="btn btn-secondary" (click)="goBack()">
+        <i class="bi bi-arrow-left me-1"></i> Back
+      </button>
+    </div>
+
     <!-- Header -->
     <div class="table-header">
       <h2><i class="bi bi-people-fill me-2"></i>Users Management</h2>
@@ -42,8 +49,7 @@
               <button
                 class="badge"
                 [ngClass]="user.isActive ? 'active' : 'inactive'"
-                (click)="toggleStatus(user)"
-              >
+                (click)="toggleStatus(user)">
                 {{ user.isActive ? 'Active' : 'Inactive' }}
               </button>
             </td>
@@ -51,17 +57,21 @@
             <td><a [href]="'tel:' + user.phone">{{ user.phone }}</a></td>
             <td class="text-center">
               <button class="action-btn edit-btn" (click)="editUser(user.userId)">
-  <i class="bi bi-pencil-fill"></i>
-</button>
+                <i class="bi bi-pencil-fill"></i>
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- Pagination Numbers Beside Each Other -->
-    <div class="pagination-container" *ngIf="totalPages > 1">
+    <!-- No Users Message -->
+    <div *ngIf="!pagedUsers.length" class="no-users">
+      <p>No users found.</p>
+    </div>
 
+    <!-- Pagination -->
+    <div class="pagination-container" *ngIf="totalPages > 1">
       <button
         class="page-btn"
         (click)="goToPage(currentPage - 1)"
@@ -83,7 +93,6 @@
         [disabled]="currentPage === totalPages">
         <i class="bi bi-chevron-right"></i>
       </button>
-
     </div>
 
   </div>

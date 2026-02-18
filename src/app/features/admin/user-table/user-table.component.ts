@@ -2,6 +2,7 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Location } from '@angular/common';
 import { UserService, User } from '../../../core/services/user.service';
 import { EditUserService, UpdateUserResponse } from '../../../core/services/edit-user.service';
 
@@ -31,6 +32,7 @@ export class UserTableComponent implements OnInit {
     private userService: UserService,
     private editUserService: EditUserService,
     private cdr: ChangeDetectorRef,
+    private location: Location, 
     private router: Router
   ) {}
 
@@ -83,6 +85,10 @@ export class UserTableComponent implements OnInit {
       this.cdr.detectChanges(); // ensure table updates
     }, 300);
   }
+  /** Navigate to the previous page */
+    goBack(): void {
+      this.location.back();
+    }
 
   updatePagination() {
     this.totalPages = Math.ceil(this.filteredUsers.length / this.itemsPerPage) || 1;
