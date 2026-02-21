@@ -1,0 +1,112 @@
+<div class="edit-Salary-page">
+  <div class="form-container">
+    <h2>Edit User Salary Structure</h2>
+
+    <form [formGroup]="editUserSalaryForm" (ngSubmit)="onSubmit()" class="edit-salary-form">
+
+      <!-- Username -->
+      <div class="form-group">
+        <label for="basicSalary">Basic Salary</label>
+        <input
+          id="basicSalary"
+          type="number"
+          formControlName="basicSalary"
+          placeholder="Enter basic salary"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="houseRentAllowance">House Rent Allowance</label>
+        <input
+          id="houseRentAllowance"
+          type="number"
+          formControlName="houseRentAllowance"
+          placeholder="Enter house rent allowance"
+        />
+      </div>
+      <div class="form-group">
+        <label for="medicalAllowance">Medical Allowance</label>
+        <input
+          id="medicalAllowance"
+          type="number"
+          formControlName="medicalAllowance"
+          placeholder="Enter medical allowance"
+        />
+      </div>
+      <div class="form-group">
+        <label for="transportAllowance">Transport Allowance</label>
+        <input
+          id="transportAllowance"
+          type="number"
+          formControlName="transportAllowance"
+          placeholder="Enter transport allowance"
+        />
+      </div>
+      <div class="form-group">
+        <label for="otherAllowance">Other Allowance</label>
+        <input
+          id="otherAllowance"
+          type="number"
+          formControlName="otherAllowance"
+          placeholder="Enter other allowance"
+        />
+      </div>
+      <div class="form-group">
+        <label for="effectiveFrom">Effective From</label>
+        <input
+          id="effectiveFrom"
+          type="date"
+          formControlName="effectiveFrom"
+        />
+        />
+      </div>
+      <div class="form-group">
+        <label for="effectiveTo">Effective To</label>
+        <input
+          id="effectiveTo"
+          type="date"
+          formControlName="effectiveTo"
+        />
+        />
+      </div>
+      <div class="form-group">
+        <label for="isActive">Is Active</label>
+        <input
+          id="isActive"
+          type="checkbox"
+          formControlName="isActive"
+        />
+        />
+      </div>
+
+       <div class="form-group">
+        <label for="isDeleted">Is Deleted</label>
+        <input
+          id="isDeleted"
+          type="checkbox"
+          formControlName="isDeleted"
+        />
+        />
+      </div>
+    
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button
+          type="submit"
+          [disabled]="editUserSalaryForm.invalid || loading"
+          class="btn-confirm"
+        >
+          {{ loading ? 'Saving...' : 'Update' }}
+        </button>
+        <button type="button" (click)="onCancel()" class="btn-cancel">
+          Cancel
+        </button>
+      </div>
+
+      <!-- Messages -->
+      <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+      <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+    </form>
+  </div>
+</div>

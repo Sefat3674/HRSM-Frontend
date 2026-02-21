@@ -6,6 +6,7 @@ import { RouterModule, Router } from '@angular/router';
 import { AddSalaryService, UserSalary } from '../../../core/services/add-salary.service';
 import { EditUserService, UpdateUserResponse } from '../../../core/services/edit-user.service';
 import { UserService,User  }  from '../../../core/services/user.service';
+import { EditSalaryComponent } from '../edit-salary/edit-salary.component'; 
 
 @Component({
   selector: 'app-add-salary',
@@ -121,21 +122,13 @@ export class AddSalaryComponent implements OnInit {
     return user.userId;
   }
 
-  editUser(userId: number) {
-    this.router.navigate(['/admin/edit-user', userId]);
-  }
+ editSalary(userId: number) {
+  this.router.navigate(['/admin/edit-salary', userId]);
+}
 
   toggleStatus(user: UserSalary) {
     const newStatus = !user.isActive;
     if (!confirm(`Change status to ${newStatus ? 'Active' : 'Inactive'}?`)) return;
-
-    this.editUserService.updateUser(user.userId, { isActive: newStatus }).subscribe({
-      next: (res: UpdateUserResponse) => {
-        user.isActive = res.isActive;
-        this.cdr.detectChanges();
-      },
-      error: () => alert('Failed to update status.')
-    });
   }
 
   goBack() {

@@ -82,7 +82,7 @@ export class UserService {
     return this._currentUser;
   }
 
-  // Clear logged-in user
+  // Clear logged-in user 
   clearUser(): void {
     this._currentUser = null;
 

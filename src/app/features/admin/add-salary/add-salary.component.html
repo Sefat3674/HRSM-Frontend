@@ -65,6 +65,7 @@
                 <th>Medical</th>
                 <th>Transport</th>
                 <th>Other</th>
+                <th>Total Salary</th>
                 <th>Effective From</th>
                 <th>Effective To</th>
                 <th>Status</th>
@@ -80,16 +81,19 @@
                 <td>{{ user.medicalAllowance }}</td>
                 <td>{{ user.transportAllowance }}</td>
                 <td>{{ user.otherAllowance }}</td>
-                <td>{{ user.effectiveFrom | date:'mediumDate' }}</td>
+                <td>{{ user.basicSalary + user.houseRentAllowance + user.medicalAllowance + user.transportAllowance + user.otherAllowance }}</td>
+                <td>{{ user.effectiveFrom ? (user.effectiveFrom | date:'mediumDate') : '-' }}</td>
                 <td>{{ user.effectiveTo ? (user.effectiveTo | date:'mediumDate') : '-' }}</td>
                 <td>
-                  <button class="badge" [ngClass]="user.isActive ? 'active' : 'inactive'" (click)="toggleStatus(user)">
-                    {{ user.isActive ? 'Active' : 'Inactive' }}
-                  </button>
-                </td>
+                <button class="badge" [ngClass]="user.isActive ? 'active' : 'inactive'" disabled>
+                  {{ user.isActive ? 'Active' : 'Inactive' }}
+                </button>
+              </td>
                 <td class="text-center">
-                  <button class="btn btn-sm btn-primary" (click)="editUser(user.userId)">Edit Salary</button>
-                </td>
+                <button class="btn btn-sm btn-primary" (click)="editSalary(user.userId)">
+                  Edit Salary
+                </button>
+              </td>
               </tr>
             </tbody>
           </table>

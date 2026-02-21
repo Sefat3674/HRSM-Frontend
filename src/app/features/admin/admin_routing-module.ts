@@ -6,6 +6,7 @@ import { AddUserComponent } from './add-user/add-user.component';
 import { UserTableComponent } from './user-table/user-table.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { AddSalaryComponent } from './add-salary/add-salary.component';
+import { EditSalaryComponent } from './edit-salary/edit-salary.component';  
 
 const routes: Routes = [
   // Admin login page
@@ -24,6 +25,8 @@ const routes: Routes = [
   { path: 'add-user', component: AddUserComponent },
   { path: 'edit-user/:id', component: EditUserComponent },
   { path: 'add-salary', component: AddSalaryComponent },
+  {path: 'edit-salary/:id', component: EditSalaryComponent }
+
   
 
 

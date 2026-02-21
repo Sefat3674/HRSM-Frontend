@@ -13,7 +13,7 @@ export interface UserSalary{
   transportAllowance: number;
   otherAllowance: number;
 
-  effectiveFrom: string;
+  effectiveFrom?: string;
   effectiveTo?: string;
 
   isActive: boolean;
