@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnChanges, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttendanceService, Attendance } from '../../../core/services/attendance.service';
-
+ 
 
 export type AttendanceStatus = 'present' | 'late' | 'absent' | 'empty';
 
