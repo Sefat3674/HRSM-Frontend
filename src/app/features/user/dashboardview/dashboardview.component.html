@@ -1,0 +1,25 @@
+<div class="dashboard-wrapper" *ngIf="user">
+  <h1 class="page-title">Dashboard</h1>
+
+  <div class="dashboard-cards">
+    <div class="card">
+      <h3>Name</h3>
+      <p>{{ user.fullName }}</p>
+    </div>
+
+    <div class="card">
+      <h3>Role</h3>
+      <p>{{ user.roleName }}</p>
+    </div>
+
+    <div class="card">
+      <h3>Email</h3>
+      <p>{{ user.email }}</p>
+    </div>
+  </div>
+
+  <div class="dashboard-calendar mt-4">
+    <h2>Attendance Calendar</h2>
+    <app-attendance-calendar [userId]="user.userId"></app-attendance-calendar>
+  </div>
+</div>

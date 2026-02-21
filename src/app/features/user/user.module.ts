@@ -7,6 +7,7 @@ import { AttendanceTableComponent } from './attendance-table/attendance-table.co
 import { UserProfileComponent } from './user-profile/user-profile.component';
 import { AttendanceCalendarComponent } from './attendance-calendar/attendance-calendar.component';  
 
+
 @NgModule({
   imports: [
     CommonModule,
@@ -14,7 +15,10 @@ import { AttendanceCalendarComponent } from './attendance-calendar/attendance-ca
     UserRoutingModule,
     UserComponent,
     AttendanceTableComponent,
-    AttendanceCalendarComponent
+    AttendanceCalendarComponent,
+    UserProfileComponent,
+   
+
     
   ]
 })

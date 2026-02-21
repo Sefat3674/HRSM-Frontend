@@ -1,120 +1,22 @@
 <div class="user-dashboard-container">
-
-  <!-- Sidebar -->
+  <!-- ================= SIDEBAR ================= -->
   <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
-
-    <!-- Toggle -->
     <button class="toggle-btn" (click)="toggleSidebar()">
       {{ isSidebarCollapsed ? '▶' : '◀' }}
     </button>
 
-    <!-- Sidebar Buttons -->
     <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
-      <button class="btn" 
-              [class.active]="view === 'dashboard'"
-              (click)="showDashboard()">
-        Dashboard
-      </button>
-
-      <button class="btn" 
-              [class.active]="view === 'attendance'"
-              (click)="showAttendance()">
-        Attendance
-      </button>
-
-      <button class="btn" 
-              [class.active]="view === 'Show User Table'"
-              (click)="showUserTable()">
-        User Table
-      </button>
-
-      <button class="btn" 
-              [class.active]="view === 'profile'"
-              (click)="showProfile()">
-        Profile
-      </button>
-
-      <button class="btn btn-logout" (click)="logout()">
-        Logout
-      </button>
+      <button class="btn" (click)="goToDashboard()">Dashboard</button>
+      <button class="btn" (click)="gotoAttendance()">Attendance</button>
+      <button class="btn" (click)="showUserTable()" *ngIf="user?.roleName==='Admin'">User Table</button>
+      <button class="btn" (click)="showUserSalary()" *ngIf="user?.roleName==='Admin'">Add Salary</button>
+      <button class="btn" (click)="showProfile()">Profile</button>
+      <button class="btn btn-logout" (click)="logout()">Logout</button>
     </div>
-
   </div>
 
-  <!-- Main Content -->
+  <!-- ================= MAIN CONTENT ================= -->
   <div class="main-content">
-
-    <!-- Loading -->
-    <div *ngIf="loading" class="spinner-container">
-      <div class="spinner"></div>
-      <p>Loading user info...</p>
-    </div>
-
-    <!-- Error -->
-    <div *ngIf="!loading && error" class="error-msg">
-      {{ error }}
-    </div>
-
-    <!-- ================= DASHBOARD ================= -->
-    <div *ngIf="!loading && user && view === 'dashboard'" class="dashboard-wrapper">
-
-      <h1 class="page-title">Dashboard</h1>
-
-      <div class="dashboard-cards">
-        <div class="card">
-          <h3>Name</h3>
-          <p>{{ user.fullName }}</p>
-        </div>
-
-        <div class="card">
-          <h3>Role</h3>
-          <p>{{ user.roleName }}</p>
-        </div>
-
-        <div class="card">
-          <h3>Email</h3>
-          <p>{{ user.email }}</p>
-        </div>
-      </div>
-       <div class="dashboard-calendar">
-    <h2>Attendance Calendar</h2>
-    <app-attendance-calendar [userId]="user.userId"></app-attendance-calendar>
-  </div>
-
-    </div>
-
-    <!-- ================= ATTENDANCE ================= -->
-    <div *ngIf="!loading && user && view === 'attendance'" class="attendance-wrapper">
-
-      <div class="attendance-card">
-
-        <h1 class="page-title">Attendance Records</h1>
-
-        <div class="attendance-user-info">
-          <div class="user-info-item">
-            <strong>Name:</strong> {{ user.fullName }}
-          </div>
-
-          <div class="user-info-item">
-            <strong>Role:</strong> {{ user.roleName }}
-          </div>
-        </div>
-
-        <app-attendance-table 
-          [userId]="user.userId">
-        </app-attendance-table>
-
-    
-      </div>
-
-    </div>
-
-    <!-- ================= PROFILE ================= -->
-    <div *ngIf="!loading && user && view === 'profile'" class="profile-wrapper">
-      <app-user-profile 
-        [user]="user">
-      </app-user-profile>
-    </div>
-
+    <router-outlet></router-outlet> <!-- <--- child views render here -->
   </div>
 </div>

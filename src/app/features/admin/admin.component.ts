@@ -16,8 +16,8 @@ import { RouterModule, Router } from '@angular/router';
         </button>
 
         <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
-          <button class="btn btn-primary" (click)="gotoAttendance()">
-            <i class="bi bi-speedometer2 me-1"></i> Attendance
+          <button class="btn btn-primary" (click)="gotoDashboard()">
+            <i class="bi bi-speedometer2 me-1"></i> Dashboard
           </button>
           <button class="btn btn-primary" (click)="goToAddUser()">
             <i class="bi bi-person-plus-fill me-1"></i> Add User
@@ -177,12 +177,10 @@ export class AdminComponent {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
  
-  gotoAttendance() {
+  gotoDashboard() {
     this.router.navigate(['/user/dashboard']);
   }
-  goToDashboard() {
-    this.router.navigate(['/user/Attendance']);
-  }
+  
 
   goToAddUser() {
     this.router.navigate(['/admin/add-user']);

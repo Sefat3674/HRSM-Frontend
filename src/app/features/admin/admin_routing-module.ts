@@ -5,6 +5,7 @@ import { AdminComponent } from './admin.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { UserTableComponent } from './user-table/user-table.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
+import { AddSalaryComponent } from './add-salary/add-salary.component';
 
 const routes: Routes = [
   // Admin login page
@@ -16,12 +17,15 @@ const routes: Routes = [
     component: AdminComponent,
     children: [
       { path: '', redirectTo: 'users', pathMatch: 'full' }, // default child route
-      { path: 'users', component: UserTableComponent },    // user table
-       // add user page
+      { path: 'users', component: UserTableComponent }, 
+        
     ]
   },
   { path: 'add-user', component: AddUserComponent },
-  { path: 'edit-user/:id', component: EditUserComponent }
+  { path: 'edit-user/:id', component: EditUserComponent },
+  { path: 'add-salary', component: AddSalaryComponent },
+  
+
 
    
    

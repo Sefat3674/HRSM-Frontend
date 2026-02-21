@@ -107,6 +107,7 @@ export class UserTableComponent implements OnInit {
   editUser(id: number | string) {
     this.router.navigate(['/admin/edit-user', id]);
   }
+  
 
   // 🔹 Toggle Active/Inactive status
   toggleStatus(user: User) {

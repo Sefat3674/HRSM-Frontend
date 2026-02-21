@@ -1,104 +1,90 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { RouterModule, Router } from '@angular/router';
-import { Location } from '@angular/common';
-import { UserService, User } from '../../core/services/user.service';
-import { AttendanceTableComponent } from './attendance-table/attendance-table.component';
-import { UserProfileComponent } from './user-profile/user-profile.component';
-import { AttendanceCalendarComponent } from '../user/attendance-calendar/attendance-calendar.component';
-@Component({
-  selector: 'app-user-dashboard',
-  standalone: true,
-  imports: [CommonModule, RouterModule, AttendanceTableComponent, UserProfileComponent, AttendanceCalendarComponent],
-  templateUrl: './user.component.html',
-  styleUrls: ['./user.component.scss']
-})
-export class UserComponent implements OnInit {
+  import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+  import { CommonModule, isPlatformBrowser } from '@angular/common';
+  import { RouterModule, Router } from '@angular/router';
+  import { Location } from '@angular/common';
+  import { UserService, User } from '../../core/services/user.service';
+  import { AttendanceService, Attendance } from '../../core/services/attendance.service';
 
-  // User Data
-  user: User | null = null;
-  loading = true;
-  error: string | null = null;
+  @Component({
+    selector: 'app-user-dashboard',
+    standalone: true,
+    imports: [CommonModule, RouterModule],
+    templateUrl: './user.component.html',
+    styleUrls: ['./user.component.scss']
+  })
+  export class UserComponent implements OnInit {
+    user: User | null = null;
+    attendance: Attendance[] = [];
+    isSidebarCollapsed = false;
 
-  // ✅ Updated View Tracker
-  view: 'dashboard' | 'attendance' | 'Show User Table' | 'profile' = 'dashboard';
+    constructor(
+      private userService: UserService,
+      private attendanceService: AttendanceService,
+      private router: Router,
+      private location: Location,
+      @Inject(PLATFORM_ID) private platformId: Object
+    ) {}
 
-  // Sidebar state
-  isSidebarCollapsed = false;
+    ngOnInit(): void {
+      if (!isPlatformBrowser(this.platformId)) return;
 
-  constructor(
-    private userService: UserService,
-    private router: Router,
-    private location: Location,
-    @Inject(PLATFORM_ID) private platformId: Object
-  ) {}
+      // Load current user
+      this.user = this.userService.loadUser();
 
-  ngOnInit(): void {
-    if (!isPlatformBrowser(this.platformId)) return;
-    this.loadUser();
-  }
+      // Redirect if no user
+      if (!this.user) {
+        this.router.navigate(['/admin/login']);
+        return;
+      }
 
-  /** Load user data from localStorage */
-  private loadUser(): void {
-    const userIdStr = localStorage.getItem('userId');
-
-    if (!userIdStr) {
-      this.error = 'Please login again';
-      this.loading = false;
-      return;
+      // ✅ Fetch attendance for this user
+      this.attendanceService.getAttendanceByUserId(this.user.userId)
+        .subscribe({
+          next: (data) => {
+            console.log('Attendance fetched:', data);
+            this.attendance = data;
+          },
+          error: (err) => {
+            console.error('Error fetching attendance:', err);
+          }
+        });
     }
 
-    this.user = {
-      userId: Number(userIdStr),
-      userName: localStorage.getItem('userName') || '',
-      fullName: localStorage.getItem('fullName') || '',
-      email: localStorage.getItem('email') || '',
-      phone: localStorage.getItem('phone') || '',
-      roleId: Number(localStorage.getItem('roleId') || 0),
-      roleName: localStorage.getItem('userRole') || 'User',
-      isActive: true
-    };
-
-    this.loading = false;
-  }
-
-  /** Logout user */
-  logout(): void {
-    if (isPlatformBrowser(this.platformId)) {
-      localStorage.clear();
+    toggleSidebar(): void {
+      this.isSidebarCollapsed = !this.isSidebarCollapsed;
     }
-    this.router.navigate(['/admin/login']);
-  }
 
-  /** View Switchers */
-  showDashboard(): void {
-    this.view = 'dashboard';
-  }
-
-  showAttendance(): void {
-    this.view = 'attendance';
-  }
-
-   showUserTable(): void {
-    if (this.user?.roleName === 'Admin') {
-      this.router.navigate(['/admin/dashboard']);
-    } else {
+    // Sidebar navigation
+    goToDashboard(): void {
       this.router.navigate(['/user/dashboard']);
     }
+
+    gotoAttendance(): void {
+    if (this.user) {
+      this.router.navigate(['/user/attendance', this.user.userId]);
+    }
   }
 
-  showProfile(): void {
-    this.view = 'profile';
-  }
+    showUserTable(): void {
+      this.router.navigate(['/admin/dashboard']);
+    }
 
-  /** Navigate to the previous page */
-  goBack(): void {
-    this.location.back();
-  }
+    showUserSalary(): void {
+      this.router.navigate(['/admin/add-salary']);
+    }
 
-  /** Toggle sidebar collapse/expand */
-  toggleSidebar(): void {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
-  }
+    showProfile(): void {
+      this.router.navigate(['/user/profile']);
+    }
 
-}
+    logout(): void {
+      if (isPlatformBrowser(this.platformId)) {
+        this.userService.clearUser();
+      }
+      this.router.navigate(['/admin/login']);
+    }
+
+    goBack(): void {
+      this.location.back();
+    }
+  }

@@ -1,0 +1,122 @@
+<div class="admin-dashboard-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      {{ isSidebarCollapsed ? '▶' : '◀' }}
+    </button>
+
+    <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
+      <!-- Dashboard -->
+      <button class="btn btn-primary" (click)="goToDashboard()">
+        <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
+      </button>
+
+    
+
+      <!-- Logout -->
+      <button class="btn btn-danger" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" [class.full-width]="isSidebarCollapsed">
+
+    <div class="dashboard-bg">
+      <div class="full-table-wrapper">
+
+        <!-- Back Button -->
+        <div class="back-btn-wrapper mb-4">
+          <button class="btn btn-secondary" (click)="goBack()">
+            <i class="bi bi-arrow-left me-1"></i> Back
+          </button>
+        </div>
+
+        <!-- Header & Search -->
+        <div class="table-header d-flex justify-content-between align-items-center mb-3">
+          <h2><i class="bi bi-people-fill me-2"></i>User Salary Structure</h2>
+          <div class="search-box">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Search users..." [(ngModel)]="searchTerm" (input)="onSearch()" />
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <div *ngIf="loading" class="text-center my-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
+
+        <!-- Salary Table -->
+        <div class="table-responsive" *ngIf="!loading && pagedUsers.length">
+          <table class="table table-modern table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Username</th>
+                <th>Basic Salary</th>
+                <th>House Rent</th>
+                <th>Medical</th>
+                <th>Transport</th>
+                <th>Other</th>
+                <th>Effective From</th>
+                <th>Effective To</th>
+                <th>Status</th>
+                <th class="text-center">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of pagedUsers; let i = index; trackBy: trackByUserId">
+                <td>{{ (currentPage - 1) * itemsPerPage + i + 1 }}</td>
+                <td>{{ user.userName }}</td>
+                <td>{{ user.basicSalary }}</td>
+                <td>{{ user.houseRentAllowance }}</td>
+                <td>{{ user.medicalAllowance }}</td>
+                <td>{{ user.transportAllowance }}</td>
+                <td>{{ user.otherAllowance }}</td>
+                <td>{{ user.effectiveFrom | date:'mediumDate' }}</td>
+                <td>{{ user.effectiveTo ? (user.effectiveTo | date:'mediumDate') : '-' }}</td>
+                <td>
+                  <button class="badge" [ngClass]="user.isActive ? 'active' : 'inactive'" (click)="toggleStatus(user)">
+                    {{ user.isActive ? 'Active' : 'Inactive' }}
+                  </button>
+                </td>
+                <td class="text-center">
+                  <button class="btn btn-sm btn-primary" (click)="editUser(user.userId)">Edit Salary</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- No Users -->
+        <div *ngIf="!loading && !pagedUsers.length" class="text-center my-5">
+          <p>No users found.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-container d-flex justify-content-center mt-3" *ngIf="totalPages > 1">
+          <button class="page-btn btn btn-outline-primary me-1" (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 1">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+          <button *ngFor="let page of pages" class="page-btn btn me-1"
+            [ngClass]="page === currentPage ? 'btn-primary' : 'btn-outline-primary'"
+            (click)="goToPage(page)">
+            {{ page }}
+          </button>
+          <button class="page-btn btn btn-outline-primary" (click)="goToPage(currentPage + 1)" [disabled]="currentPage === totalPages">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>

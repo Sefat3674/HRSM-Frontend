@@ -2,6 +2,7 @@ import { Component, OnInit, Input, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AttendanceService, Attendance } from '../../../core/services/attendance.service';
 import { FormsModule } from '@angular/forms';
+import { UserService,User  }  from '../../../core/services/user.service';
 
 // 🔹 New interface for calendar table rows
 interface CalendarDay {
@@ -35,17 +36,22 @@ export class AttendanceTableComponent implements OnInit {
   private searchTimeout?: ReturnType<typeof setTimeout>;
 
   constructor(
-    private attendanceService: AttendanceService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  private attendanceService: AttendanceService,
+  private userService: UserService,
+  private cdr: ChangeDetectorRef
+) {}
 
   ngOnInit(): void {
-    if (!this.userId) {
-      this.error = 'No user ID provided';
-      return;
-    }
-    this.fetchAttendance();
+  const user = this.userService.loadUser();
+
+  if (!user) {
+    this.error = 'User not logged in';
+    return;
   }
+
+  this.userId = user.userId;
+  this.fetchAttendance();
+}
 
   private fetchAttendance(): void {
   this.loading = true;

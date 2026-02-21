@@ -1,7 +1,7 @@
-import { Component, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { User } from '../../../core/services/user.service';
+import { User, UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -10,28 +10,41 @@ import { User } from '../../../core/services/user.service';
   templateUrl: './user-profile.component.html',
   styleUrls: ['./user-profile.component.scss']
 })
-export class UserProfileComponent {
+export class UserProfileComponent implements OnInit {
+  user?: User;
+  loading = true;
+  error: string | null = null;
 
-  @Input() user!: User;
-  @Input() loading: boolean = false;
-  @Input() error: string | null = null;
+  constructor(private router: Router, private userService: UserService) {}
 
-  constructor(private router: Router) {}
+  ngOnInit(): void {
+    try {
+      const loadedUser = this.userService.loadUser();
+      if (loadedUser) {
+        this.user = loadedUser;
+        this.loading = false;
+      } else {
+        throw new Error('User not found');
+      }
+    } catch (err: any) {
+      this.error = err.message;
+      this.loading = false;
+    }
+  }
 
   logout(): void {
-    localStorage.clear();
-    this.router.navigate(['/admin/login']);
+    this.userService.clearUser();
+    this.router.navigate(['/login']);
   }
 
   get avatarUrl(): string {
-    if (this.user?.fullName) {
-      const initials = this.user.fullName
-        .split(' ')
-        .map(name => name[0])
-        .join('')
-        .toUpperCase();
-      return `https://via.placeholder.com/70/667eea/ffffff?text=${initials}`;
-    }
-    return 'https://via.placeholder.com/70/667eea/ffffff?text=U';
+    const initials = (this.user?.fullName || 'U')
+      .split(' ')
+      .filter(n => n)
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
+
+    return `https://via.placeholder.com/70/667eea/ffffff?text=${initials || 'U'}`;
   }
 }

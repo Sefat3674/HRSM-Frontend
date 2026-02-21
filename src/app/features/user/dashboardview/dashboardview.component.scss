@@ -1,0 +1,43 @@
+.page-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #4f46e5;
+}
+
+.dashboard-cards {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  flex-wrap: wrap;
+}
+
+.card {
+  background: #ffffff;
+  padding: 25px;
+  width: 260px;
+  border-radius: 18px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  h3 {
+    color: #4f46e5;
+    margin-bottom: 10px;
+  }
+
+  p {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+
+  &:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.dashboard-calendar {
+  margin-top: 40px;
+}
