@@ -19,6 +19,8 @@ export interface UserSalary{
 
   isActive: boolean;
   createdAt?: string;
+  reason?: string;
+  approvedBy?: number;
 }
 
 // Response from backend after update
@@ -38,6 +40,7 @@ export interface UpdateUserSalaryResponse {
 
   isActive: boolean;
   createdAt?: string;
+  ApprovedBy?: number;
 }
 
 @Injectable({

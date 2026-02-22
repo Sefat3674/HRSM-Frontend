@@ -58,7 +58,7 @@
           type="date"
           formControlName="effectiveFrom"
         />
-        />
+        
       </div>
       <div class="form-group">
         <label for="effectiveTo">Effective To</label>
@@ -76,7 +76,7 @@
           type="checkbox"
           formControlName="isActive"
         />
-        />
+        
       </div>
 
        <div class="form-group">
@@ -88,7 +88,17 @@
         />
         />
       </div>
-    
+      
+      <div class="form-group">
+      <label for="reason">Salary Revision Reason</label>
+        <input
+          id="reason"
+          type="text"
+          formControlName="reason"
+          placeholder="Enter reason for salary update"
+          required
+        />
+      </div>
 
       <!-- Buttons -->
       <div class="button-group">
@@ -103,6 +113,7 @@
           Cancel
         </button>
       </div>
+      
 
       <!-- Messages -->
       <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>

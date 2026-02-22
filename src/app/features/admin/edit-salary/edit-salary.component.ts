@@ -4,6 +4,8 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angula
 import { Router, ActivatedRoute } from '@angular/router';
 import { EditSalaryService, UserSalary, UpdateUserSalaryResponse } from '../../../core/services/edit-salary.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AuthService } from '../../../core/services/auth.service';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-edit-salary',
@@ -24,7 +26,9 @@ export class EditSalaryComponent implements OnInit {
     private fb: FormBuilder,
     private editSalaryService: EditSalaryService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private authService: AuthService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -47,79 +51,81 @@ export class EditSalaryComponent implements OnInit {
       effectiveFrom: [''],
       effectiveTo: [''],
       isActive: [true],
-      isDeleted: [false]
+      isDeleted: [false],
+      reason: ['', Validators.required]
     });
   }
 
   private fetchSalary(id: string | number): void {
-  this.loading = true;
-  this.editSalaryService.getSalaryById(id).subscribe({
-    next: (salaries: UserSalary[]) => {
-      this.loading = false;
+    this.loading = true;
+    this.cdRef.detectChanges(); // ✅ update loading immediately
 
-      if (!salaries || salaries.length === 0) {
-        this.errorMessage = 'Salary data not found.';
-        return;
+    this.editSalaryService.getSalaryById(id).subscribe({
+      next: (salaries: UserSalary[]) => {
+        this.loading = false;
+        this.cdRef.detectChanges(); // ✅ update UI after data load
+
+        if (!salaries || salaries.length === 0) {
+          this.errorMessage = 'Salary data not found.';
+          return;
+        }
+
+        const salary = salaries[0]; // pick the first salary
+
+        this.editUserSalaryForm.patchValue({
+          basicSalary: salary.basicSalary,
+          houseRentAllowance: salary.houseRentAllowance,
+          medicalAllowance: salary.medicalAllowance,
+          transportAllowance: salary.transportAllowance,
+          otherAllowance: salary.otherAllowance,
+          effectiveFrom: salary.effectiveFrom,
+          effectiveTo: salary.effectiveTo,
+          isActive: salary.isActive,
+          isDeleted: false
+        });
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        this.errorMessage = err?.error?.message || 'Failed to load salary data.';
+        this.cdRef.detectChanges();
+        console.error('Fetch Salary Error:', err);
       }
-
-      const salary = salaries[0]; // pick the first salary
-
-      this.editUserSalaryForm.patchValue({
-        basicSalary: salary.basicSalary,
-        houseRentAllowance: salary.houseRentAllowance,
-        medicalAllowance: salary.medicalAllowance,
-        transportAllowance: salary.transportAllowance,
-        otherAllowance: salary.otherAllowance,
-        effectiveFrom: salary.effectiveFrom,
-        effectiveTo: salary.effectiveTo,
-        isActive: salary.isActive,
-        isDeleted: false
-      });
-    },
-    error: (err: HttpErrorResponse) => {
-      this.loading = false;
-      this.errorMessage = err?.error?.message || 'Failed to load salary data.';
-      console.error('Fetch Salary Error:', err);
-    }
-  });
-}
-
-  onSubmit(): void {
-  if (this.editUserSalaryForm.invalid) {
-    this.errorMessage = 'Please fill all required fields correctly.';
-    return;
+    });
   }
 
-  this.loading = true;
-  this.successMessage = '';
-  this.errorMessage = '';
-
-  const payload: Partial<UserSalary> = this.editUserSalaryForm.getRawValue();
-  payload.isActive = Boolean(payload.isActive);
-
-  this.editSalaryService.updateUserSalary(this.userId, payload).subscribe({
-    next: (res: UpdateUserSalaryResponse) => {
-      this.loading = false;
-
-      // Show success message
-      this.successMessage = 'Salary updated successfully!';
-
-      // Optional: mark form pristine/untouched
-      this.editUserSalaryForm.markAsPristine();
-      this.editUserSalaryForm.markAsUntouched();
-
-      // Navigate after a short delay so user sees the message
-      setTimeout(() => {
-        this.router.navigate(['/admin/add-salary']);
-      }, 1000); // 1 second delay
-    },
-    error: (err: HttpErrorResponse) => {
-      this.loading = false;
-      this.errorMessage = err?.error?.message || 'Failed to update salary.';
-      console.error('Update Salary Error:', err);
+  onSubmit(): void {
+    if (this.editUserSalaryForm.invalid) {
+      this.errorMessage = 'Please fill all required fields correctly.';
+      return;
     }
-  });
-}
+
+    this.successMessage = '';
+    this.errorMessage = '';
+    this.loading = true;
+    this.cdRef.detectChanges(); // ✅ update button immediately
+
+    const payload: Partial<UserSalary> = this.editUserSalaryForm.getRawValue();
+    payload.isActive = Boolean(payload.isActive);
+    payload.approvedBy = this.authService.currentUserId!;
+
+    this.editSalaryService.updateUserSalary(this.userId, payload).subscribe({
+      next: (res: UpdateUserSalaryResponse) => {
+        this.loading = false;
+        this.successMessage = 'Salary updated successfully!';
+        this.editUserSalaryForm.markAsPristine();
+        this.editUserSalaryForm.markAsUntouched();
+        this.cdRef.detectChanges(); // ✅ update UI after success
+
+        setTimeout(() => this.router.navigate(['/admin/add-salary']), 1000);
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        this.errorMessage = err?.error?.message || 'Failed to update salary.';
+        this.cdRef.detectChanges(); // ✅ update UI after error
+        console.error('Update Salary Error:', err);
+      }
+    });
+  }
 
   onCancel(): void {
     this.router.navigate(['/admin/add-salary']);
