@@ -1,10 +1,8 @@
-import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { isPlatformBrowser } from '@angular/common';
-import { Inject, PLATFORM_ID } from '@angular/core';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +46,6 @@ export class LoginComponent {
       next: (res: any) => {
         this.loading = false;
 
-        // Browser-only localStorage
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('adminToken', res.token);
           localStorage.setItem('userRole', res.roleName || 'User');
@@ -59,12 +56,7 @@ export class LoginComponent {
           localStorage.setItem('phone', res.phone);
         }
 
-        // Role-based navigation
-        if (res.roleName === 'Admin') {
-          this.router.navigate(['/user/dashboard']);
-        } else {
-          this.router.navigate(['/user/dashboard']);
-        }
+        this.router.navigate(['/user/dashboard'], { replaceUrl: true });
       },
       error: (err) => {
         this.loading = false;

@@ -41,3 +41,48 @@
 .dashboard-calendar {
   margin-top: 40px;
 }
+
+.dashboard-salary {
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e3a8a; // deep blue
+    margin-bottom: 1rem;
+  }
+
+  .salary-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-width: 500px;
+    margin: 0 ;
+
+    .salary-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 1rem;
+      color: #374151; // gray-700
+      border-bottom: 1px dashed #e5e7eb;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+
+    hr {
+      margin: 1rem 0;
+      border: 0;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .salary-total {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #16a34a; // green
+    }
+  }
+}

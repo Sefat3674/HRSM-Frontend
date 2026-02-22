@@ -1,25 +1,55 @@
 <div class="dashboard-wrapper" *ngIf="user">
   <h1 class="page-title">Dashboard</h1>
 
+  <!-- User Info Cards -->
   <div class="dashboard-cards">
-    <div class="card">
-      <h3>Name</h3>
-      <p>{{ user.fullName }}</p>
-    </div>
-
-    <div class="card">
-      <h3>Role</h3>
-      <p>{{ user.roleName }}</p>
-    </div>
-
-    <div class="card">
-      <h3>Email</h3>
-      <p>{{ user.email }}</p>
-    </div>
+    <div class="card"><h3>Name</h3><p>{{ user.fullName }}</p></div>
+    <div class="card"><h3>Role</h3><p>{{ user.roleName }}</p></div>
+    <div class="card"><h3>Email</h3><p>{{ user.email }}</p></div>
   </div>
 
+  <!-- Attendance Calendar -->
   <div class="dashboard-calendar mt-4">
     <h2>Attendance Calendar</h2>
     <app-attendance-calendar [userId]="user.userId"></app-attendance-calendar>
+  </div>
+
+
+  <!-- Salary Info under Calendar -->
+<div class="dashboard-salary mt-4" *ngIf="salary">
+  <h2 class="section-title">Salary Information</h2>
+  <div class="salary-card">
+    <div class="salary-row">
+      <span>Basic Salary:</span>
+      <span>{{ salary.basicSalary | currency:'BDT':'symbol':'1.0-0' }}</span>
+    </div>
+    <div class="salary-row">
+      <span>House Rent Allowance:</span>
+      <span>{{ salary.houseRentAllowance | currency:'BDT':'symbol':'1.0-0' }}</span>
+    </div>
+    <div class="salary-row">
+      <span>Medical Allowance:</span>
+      <span>{{ salary.medicalAllowance | currency:'BDT':'symbol':'1.0-0' }}</span>
+    </div>
+    <div class="salary-row">
+      <span>Transport Allowance:</span>
+      <span>{{ salary.transportAllowance | currency:'BDT':'symbol':'1.0-0' }}</span>
+    </div>
+    <div class="salary-row">
+      <span>Other Allowance:</span>
+      <span>{{ salary.otherAllowance | currency:'BDT':'symbol':'1.0-0' }}</span>
+    </div>
+    <hr />
+    <div class="salary-total">
+      <span>Total Salary:</span>
+      <span>{{ getTotalSalary() | currency:'BDT':'symbol':'1.0-0' }}</span>
+    </div>
+  </div>
+</div>
+
+  <!-- Optional Loading Spinner -->
+  <div *ngIf="loadingSalary" class="spinner-container">
+    <div class="spinner"></div>
+    <p>Loading salary info...</p>
   </div>
 </div>
