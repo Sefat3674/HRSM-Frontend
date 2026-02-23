@@ -70,6 +70,7 @@
                 <th>Effective To</th>
                 <th>Status</th>
                 <th class="text-center">Action</th>
+                <th class="text-center">Salary Adjustment</th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +93,11 @@
                 <td class="text-center">
                 <button class="btn btn-sm btn-primary" (click)="editSalary(user.userId)">
                   Edit Salary
+                </button>
+              </td>
+              <td class="text-center">
+                <button class="btn btn-sm btn-primary" (click)="adjustSalary(user.userId)">
+                  Salary Adjustment
                 </button>
               </td>
               </tr>
