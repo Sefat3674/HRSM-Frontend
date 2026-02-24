@@ -1,0 +1,122 @@
+<div class="admin-dashboard-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      {{ isSidebarCollapsed ? '▶' : '◀' }}
+    </button>
+
+    <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
+      <button class="btn btn-primary" (click)="goToDashboard()">
+        <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
+      </button>
+
+      <button class="btn btn-primary" (click)="goToaddSalary()">
+        <i class="bi bi-speedometer2 me-1"></i> Add Salary
+      </button>
+
+      <button class="btn btn-danger" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" [class.full-width]="isSidebarCollapsed">
+
+    <div class="salary-container">
+
+      <h2>Salary Adjustment History</h2>
+
+      <!-- Salary Table -->
+      <div class="salary-table" *ngIf="salaryData">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+           <tr *ngFor="let bonus of salaryData.bonuses">
+              <td>Bonus ({{ bonus.bonusType }})</td>
+              <td>{{ bonus.description }}</td>
+              <td class="bonus-amount">{{ bonus.amount | currency:'BDT':'symbol':'1.0-0' }}</td>
+            </tr>
+            <tr *ngFor="let deduction of salaryData.deductions">
+              <td>Deduction ({{ deduction.deductionType }})</td>
+              <td>{{ deduction.description }}</td>
+              <td class="deduction-amount">{{ deduction.amount | currency:'BDT':'symbol':'1.0-0' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add New Adjustment -->
+      <h2>Add New Adjustment</h2>
+      <form [formGroup]="salaryForm" (ngSubmit)="submit()">
+
+        <!-- Month & Year -->
+        <div class="top-row year-month-picker">
+          <label>Select Month & Year</label>
+          <input type="number" formControlName="year" min="1900" max="2100" placeholder="Year" class="year-input">
+
+          <div class="months-grid">
+            <button type="button" *ngFor="let m of months" 
+                    [class.selected]="salaryForm.get('month')?.value === m.id"
+                    (click)="salaryForm.get('month')?.setValue(m.id)">
+              {{ m.name }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Bonuses Section -->
+        <div class="section">
+          <h3>Bonuses</h3>
+          <button type="button" (click)="addBonus()">+ Add Bonus</button>
+
+          <div formArrayName="bonuses">
+            <div class="card" *ngFor="let bonus of bonuses.controls; let i = index" [formGroupName]="i">
+              <input formControlName="bonusType" placeholder="Bonus Type">
+              <input type="number" formControlName="amount" placeholder="Amount">
+              <input formControlName="description" placeholder="Description">
+              <button type="button" class="remove" (click)="removeBonus(i)">X</button>
+            </div>
+          </div>
+
+          <div class="total">Total Bonus: {{ totalBonus | currency:'BDT':'symbol':'1.0-0' }}</div>
+        </div>
+
+        <!-- Deductions Section -->
+        <div class="section">
+          <h3>Deductions</h3>
+          <button type="button" (click)="addDeduction()">+ Add Deduction</button>
+
+          <div formArrayName="deductions">
+            <div class="card" *ngFor="let deduction of deductions.controls; let i = index" [formGroupName]="i">
+              <input formControlName="deductionType" placeholder="Deduction Type">
+              <input type="number" formControlName="amount" placeholder="Amount">
+              <input formControlName="description" placeholder="Description">
+              <button type="button" class="remove" (click)="removeDeduction(i)">X</button>
+            </div>
+          </div>
+
+          <div class="total deduction-total">Total Deduction: {{ totalDeduction | currency:'BDT':'symbol':'1.0-0' }}</div>
+        </div>
+
+        <!-- Net Salary -->
+        <div class="section">
+          <h3>Net Adjustment</h3>
+          <div class="total">Net Salary: {{ netSalary | currency:'BDT':'symbol':'1.0-0' }}</div>
+        </div>
+
+        <button type="submit" [disabled]="loading" class="submit-btn">
+          {{ loading ? 'Saving...' : 'Save Adjustment' }}
+        </button>
+
+      </form>
+
+    </div>
+  </div>
+</div>

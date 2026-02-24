@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { AddUserComponent } from './add-user/add-user.component';
 import { UserTableComponent } from './user-table/user-table.component';
 import { AddSalaryComponent } from './add-salary/add-salary.component'; 
+import { SalaryAdjustmentComponent } from './salary-adjustment/salary-adjustment.component';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import { AddSalaryComponent } from './add-salary/add-salary.component';
     LoginComponent,
     UserTableComponent,
     AddUserComponent,
-    AddSalaryComponent
+    AddSalaryComponent,
+    SalaryAdjustmentComponent
   
   ]
 })
