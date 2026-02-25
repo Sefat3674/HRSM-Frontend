@@ -1,0 +1,85 @@
+<div class="admin-dashboard-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      {{ isSidebarCollapsed ? '▶' : '◀' }}
+    </button>
+
+    <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
+      <button class="btn btn-primary" (click)="goToDashboard()">
+        <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
+      </button>
+      <button class="btn btn-primary" (click)="gotoAddSalary()">
+        <i class="bi bi-speedometer2 me-1"></i> Add Salary
+      </button>
+
+      <button class="btn btn-danger" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-1"></i> Logout
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" [class.full-width]="isSidebarCollapsed">
+    <div class="payroll-page">
+      <div class="form-container">
+        <h2>Create Payroll Period</h2>
+
+        <form [formGroup]="payrollForm" (ngSubmit)="onSubmit()" class="payroll-form">
+
+          <!-- Month -->
+          <div class="form-group">
+            <label for="month">Month</label>
+            <select id="month" formControlName="month">
+              <option value="" disabled>Select Month</option>
+              <option *ngFor="let m of months" [value]="m.value">
+                {{ m.name }}
+              </option>
+            </select>
+          </div>
+
+          <!-- Year -->
+          <div class="form-group">
+            <label for="year">Year</label>
+            <input id="year" type="number" formControlName="year" />
+          </div>
+
+          <!-- Start Date -->
+          <div class="form-group">
+            <label for="startDate">Start Date</label>
+            <input id="startDate" type="date" formControlName="startDate" />
+          </div>
+
+          <!-- End Date -->
+          <div class="form-group">
+            <label for="endDate">End Date</label>
+            <input id="endDate" type="date" formControlName="endDate" />
+          </div>
+
+          <!-- Payroll Code -->
+          <div class="form-group">
+            <label for="payrollCode">Payroll Code</label>
+            <input id="payrollCode" type="text" formControlName="payrollCode" readonly />
+          </div>
+
+          <!-- Buttons -->
+          <div class="button-group">
+            <button type="submit" [disabled]="payrollForm.invalid || loading" class="btn-confirm">
+              {{ loading ? 'Creating...' : 'Create Payroll' }}
+            </button>
+
+            <button type="button" (click)="onCancel()" class="btn-cancel">
+              Reset
+            </button>
+          </div>
+
+          <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
+          <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
