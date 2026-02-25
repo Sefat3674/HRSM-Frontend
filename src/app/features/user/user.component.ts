@@ -72,6 +72,9 @@
     showUserSalary(): void {
       this.router.navigate(['/admin/add-salary']);
     }
+    showPayroll(): void {
+      this.router.navigate(['/admin/payroll']);
+    }
 
     showProfile(): void {
       this.router.navigate(['/user/profile']);

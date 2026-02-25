@@ -10,6 +10,7 @@
       <button class="btn" (click)="gotoAttendance()">Attendance</button>
       <button class="btn" (click)="showUserTable()" *ngIf="user?.roleName==='Admin'">User Table</button>
       <button class="btn" (click)="showUserSalary()" *ngIf="user?.roleName==='Admin'">Add Salary</button>
+      <button class="btn" (click)="showPayroll()" *ngIf="user?.roleName==='Admin'">Users PayRoll</button>
       <button class="btn" (click)="showProfile()">Profile</button>
       <button class="btn btn-logout" (click)="logout()">Logout</button>
     </div>
