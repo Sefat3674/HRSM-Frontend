@@ -75,6 +75,9 @@
     showPayroll(): void {
       this.router.navigate(['/admin/payroll']);
     }
+    reviewPayroll(): void {
+      this.router.navigate(['/admin/preview-payroll']);
+    }
 
     showProfile(): void {
       this.router.navigate(['/user/profile']);

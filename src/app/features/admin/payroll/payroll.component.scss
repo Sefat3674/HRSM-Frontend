@@ -4,7 +4,6 @@
   min-height: 100vh;
   font-family: 'Segoe UI', sans-serif;
   background: #f0f4ff;
-  transition: all 0.3s;
 }
 
 /* ===== Sidebar ===== */
@@ -41,7 +40,10 @@
   align-items: center;
   transition: background 0.3s;
 }
-.toggle-btn:hover { background: rgba(255,255,255,0.35); }
+
+.toggle-btn:hover {
+  background: rgba(255,255,255,0.35);
+}
 
 .sidebar-buttons {
   display: flex;
@@ -72,122 +74,193 @@
 /* ===== Main Content ===== */
 .main-content {
   flex: 1;
-  padding: 50px 20px;
-  transition: all 0.3s;
+  padding: 40px 20px;
   display: flex;
   justify-content: center;
 }
 
-.main-content.full-width {
-  margin-left: 0;
-}
-
-/* ===== Payroll Form ===== */
 .payroll-page {
-  display: flex;
-  justify-content: center;
   width: 100%;
+  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
 
-  .form-container {
-    width: 450px;
-    background: #fff;
-    padding: 40px 30px;
-    border-radius: 12px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+/* ===== Section Card (NEW) ===== */
+.section-card {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
 
-    h2 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #333;
-      font-weight: 700;
-    }
+.section-card h2 {
+  margin-bottom: 20px;
+  font-weight: 700;
+  color: #333;
+}
 
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      margin-bottom: 20px;
+/* ===== Payroll Table ===== */
+.payroll-table {
+  overflow-x: auto;
+}
 
-      label {
-        margin-bottom: 5px;
-        font-weight: 500;
-        color: #555;
-      }
+.payroll-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-      input, select {
-        padding: 10px 12px;
-        border-radius: 8px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-        transition: 0.3s;
-      }
+.payroll-table th {
+  background: #4a90e2;
+  color: #fff;
+  padding: 12px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
 
-      input:focus, select:focus {
-        border-color: #4a90e2;
-        box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
-        outline: none;
-      }
-    }
+.payroll-table td {
+  padding: 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #444;
+}
 
-    .button-group {
-      display: flex;
-      gap: 12px;
+.payroll-table tr:hover {
+  background: #f5f8ff;
+}
 
-      button {
-        flex: 1;
-        padding: 12px;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        transition: 0.3s;
+/* ===== Status Badge ===== */
+.locked {
+  background: #e74c3c;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
 
-        &.btn-confirm {
-          background: #4a90e2;
-          color: #fff;
+.unlocked {
+  background: #2ecc71;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
 
-          &:hover { background: #357ABD; }
-          &:disabled { background: #a0c4f7; cursor: not-allowed; }
-        }
+/* ===== Form Styling ===== */
+.payroll-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
 
-        &.btn-cancel {
-          background: #f0f0f0;
-          color: #333;
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
 
-          &:hover { background: #dcdcdc; }
-        }
-      }
-    }
+.form-group label {
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #555;
+}
 
-    .success-message {
-      margin-top: 20px;
-      color: green;
-      font-weight: 600;
-      text-align: center;
-    }
+.form-group input,
+.form-group select {
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  transition: 0.3s;
+}
 
-    .error-message {
-      margin-top: 20px;
-      color: red;
-      font-weight: 600;
-      text-align: center;
-    }
-  }
+.form-group input:focus,
+.form-group select:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 8px rgba(74, 144, 226, 0.3);
+  outline: none;
+}
+
+/* ===== Buttons ===== */
+.button-group {
+  display: flex;
+  gap: 12px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-confirm {
+  background: #4a90e2;
+  color: #fff;
+}
+
+.btn-confirm:hover {
+  background: #357ABD;
+}
+
+.btn-confirm:disabled {
+  background: #a0c4f7;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.btn-cancel:hover {
+  background: #dcdcdc;
+}
+
+/* ===== Messages ===== */
+.success-message {
+  margin-top: 10px;
+  color: #2ecc71;
+  font-weight: 600;
+  text-align: center;
+}
+
+.error-message {
+  margin-top: 10px;
+  color: #e74c3c;
+  font-weight: 600;
+  text-align: center;
+}
+
+.no-data {
+  text-align: center;
+  padding: 20px;
+  color: #777;
+  font-weight: 500;
 }
 
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .sidebar {
     width: 60px;
-    padding: 1rem 0;
   }
 
   .main-content {
     padding: 20px 10px;
   }
 
-  .form-container {
-    width: 100%;
-    padding: 30px 20px;
+  .section-card {
+    padding: 20px;
+  }
+
+  .button-group {
+    flex-direction: column;
   }
 }

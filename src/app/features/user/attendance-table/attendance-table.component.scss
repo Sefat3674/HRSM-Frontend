@@ -1,96 +1,207 @@
+/* ==========================================
+   Complete Dashboard & Table SCSS
+   Modern, Professional, Card-style + Sticky Header
+========================================== */
+
+/* ===== Dashboard Background ===== */
 .dashboard-bg {
-  min-height: 100vh;       /* Full viewport height */
+  min-height: 100vh;             
   padding: 2rem;
-  background: #f0f4ff;
+  background: linear-gradient(135deg, #f0f4ff, #e2e8f8);
   display: flex;
   flex-direction: column;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  transition: all 0.3s ease;
 }
 
+/* ===== Table Wrapper ===== */
 .full-table-wrapper {
-  background: #ffffff;
-  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  
-  flex: 1;                  /* Take remaining height */
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  flex: 1;                     
   display: flex;
   flex-direction: column;
-  overflow: hidden;         /* Keep table contained */
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-/* Make the table scrollable if too long */
+/* Scrollable table */
 .table-responsive {
-  flex: 1;                  /* Fill remaining space in wrapper */
-  overflow-y: auto;         /* Vertical scroll for long table */
+  flex: 1;                     
+  overflow-y: auto;            
+  scrollbar-width: thin;
+  scrollbar-color: rgba(100,100,255,0.3) transparent;
 }
 
-/* Sticky header so it stays visible while scrolling */
+.table-responsive::-webkit-scrollbar {
+  width: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: rgba(100,100,255,0.3);
+  border-radius: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ===== Table Styles ===== */
+.table-modern {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 10px;       
+  font-size: 0.95rem;
+}
+
+/* Sticky header */
 .table-modern thead th {
   position: sticky;
   top: 0;
-  background: #f5f7fa;      /* Keep header background */
+  background: #f5f7fa;
   z-index: 10;
-}
-
-/* Table Styles */
-.table-modern {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.table-modern th {
-  padding: 12px;
+  padding: 14px;
   font-weight: 600;
-  text-align: left;
+  text-align: center;
+  color: #4b5563;
   border-bottom: 2px solid #e0e0e0;
 }
 
+/* Table cells */
 .table-modern td {
-  padding: 12px;
+  padding: 14px;
+  background: #ffffff;
   border-bottom: 1px solid #f0f0f0;
-  transition: background-color 0.3s;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+/* Row hover effect */
+.table-modern tbody tr {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border-radius: 12px;
 }
 
 .table-modern tbody tr:hover {
   background: #f9fbff;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
 }
 
-/* Text highlight */
-.late-text {
-  color: #dc3545;
-  font-weight: 500;
-}
-
+/* ===== Text Highlight ===== */
+.late-text,
 .early-text {
   color: #dc3545;
   font-weight: 500;
 }
 
-/* Status Badge */
+/* ===== Status Badges ===== */
 .badge-custom {
-  padding: 6px 12px;
+  padding: 6px 14px;
   border-radius: 20px;
   font-size: 13px;
   font-weight: 500;
   display: inline-block;
+  text-align: center;
+  transition: all 0.3s ease;
 }
 
+/* Present – green */
 .present {
-  background: #d4edda;
-  color: #155724;
+  background: rgba(34, 197, 94, 0.15);
+  color: #16a34a;
 }
 
+/* Absent – red */
 .absent {
-  background: #f8d7da;
-  color: #721c24;
+  background: rgba(239, 68, 68, 0.15);
+  color: #dc2626;
 }
 
+/* Late – yellow/orange */
 .late {
-  background: #fff3cd;
-  color: #856404;
+  background: rgba(253, 224, 71, 0.15);
+  color: #f59e0b;
 }
 
+/* No Data – gray */
 .no-data {
-  background: #e2e3e5;
-  color: #383d41;
+  background: rgba(156, 163, 175, 0.15);
+  color: #374151;
+}
+
+/* ===== Action Buttons ===== */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.action-btn.edit-btn {
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+}
+
+.action-btn.adjust-btn {
+  background: linear-gradient(135deg, #ff416c, #ff4b2b);
+}
+
+.action-btn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+.action-btn i {
+  margin-right: 6px;
+}
+
+/* ===== Pagination ===== */
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 1.5rem;
+}
+
+.page-btn {
+  border: none;
+  background: #f3f4f6;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.page-btn:hover {
+  background: #e5e7eb;
+}
+
+.page-btn.active {
+  background: #6366f1;
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(99,102,241,0.3);
+}
+
+.page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ===== No Users ===== */
+.no-users {
+  text-align: center;
+  padding: 2rem;
+  color: #6b7280;
+  font-weight: 500;
 }

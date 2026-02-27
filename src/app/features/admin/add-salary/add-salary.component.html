@@ -71,6 +71,7 @@
                 <th>Status</th>
                 <th class="text-center">Action</th>
                 <th class="text-center">Salary Adjustment</th>
+                
               </tr>
             </thead>
             <tbody>
@@ -91,15 +92,17 @@
                 </button>
               </td>
                 <td class="text-center">
-                <button class="btn btn-sm btn-primary" (click)="editSalary(user.userId)">
-                  Edit Salary
-                </button>
-              </td>
-              <td class="text-center">
-                <button class="btn btn-sm btn-primary" (click)="adjustSalary(user.userId)">
-                  Salary Adjustment
-                </button>
-              </td>
+                  <button class="btn-glass" (click)="editSalary(user.userId)">
+                    <i class="bi bi-pencil-fill me-1"></i> Edit Salary
+                  </button>
+                </td>
+                
+                <td class="text-center">
+                  <button class="btn-glass-alt" (click)="adjustSalary(user.userId)">
+                    <i class="bi bi-cash-stack me-1"></i> Salary Adjustment
+                  </button>
+                </td>
+                
               </tr>
             </tbody>
           </table>

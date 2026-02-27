@@ -11,6 +11,9 @@ import { UserTableComponent } from './user-table/user-table.component';
 import { AddSalaryComponent } from './add-salary/add-salary.component'; 
 import { SalaryAdjustmentComponent } from './salary-adjustment/salary-adjustment.component';
 import { PayrollComponent } from './payroll/payroll.component'; 
+import { PayrollReviewComponent } from './preview-payroll/preview-payroll.component';
+
+
 
 @NgModule({
   imports: [
@@ -26,7 +29,9 @@ import { PayrollComponent } from './payroll/payroll.component';
     AddUserComponent,
     AddSalaryComponent,
     SalaryAdjustmentComponent,
-    PayrollComponent
+    PayrollComponent,
+    PayrollReviewComponent
+
   
   ]
 })

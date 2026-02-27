@@ -9,6 +9,9 @@ import { AddSalaryComponent } from './add-salary/add-salary.component';
 import { EditSalaryComponent } from './edit-salary/edit-salary.component';  
 import { SalaryAdjustmentComponent } from './salary-adjustment/salary-adjustment.component';
 import { PayrollComponent } from './payroll/payroll.component';
+import {PayrollReviewComponent} from './preview-payroll/preview-payroll.component';
+
+
 
 
 const routes: Routes = [
@@ -31,6 +34,7 @@ const routes: Routes = [
   {path: 'edit-salary/:id', component: EditSalaryComponent },
   { path: 'salary-adjustment/:id', component: SalaryAdjustmentComponent },
    {path: 'payroll',component:PayrollComponent},
+   { path: 'preview-payroll', component: PayrollReviewComponent },
   
  
     

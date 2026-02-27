@@ -1,0 +1,87 @@
+<div class="admin-dashboard-container">
+
+  <!-- Sidebar -->
+  <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <button class="toggle-btn" (click)="toggleSidebar()">
+      {{ isSidebarCollapsed ? '▶' : '◀' }}
+    </button>
+    <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
+      <button class="btn btn-primary" (click)="goToDashboard()">Dashboard</button>
+      <button class="btn btn-danger" (click)="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content" [class.full-width]="isSidebarCollapsed">
+    <div class="payroll-page">
+
+      <div class="section-card">
+        <h2>Payroll Review</h2>
+
+        <form [formGroup]="previewForm" (ngSubmit)="onPreview()" class="payroll-form">
+          <div class="form-group">
+            <label>Month</label>
+            <select formControlName="month">
+              <option value="" disabled>Select Month</option>
+              <option *ngFor="let m of months" [value]="m.value">{{ m.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Year</label>
+            <input type="number" formControlName="year" />
+          </div>
+
+          <div class="button-group">
+            <button type="submit" [disabled]="previewForm.invalid || previewLoading" class="btn-confirm">
+              {{ previewLoading ? 'Previewing...' : 'Preview Payroll' }}
+            </button>
+            <button type="button" (click)="onPreviewReset()" class="btn-cancel">Reset</button>
+          </div>
+
+          <div *ngIf="previewErrorMessage" class="error-message">{{ previewErrorMessage }}</div>
+        </form>
+
+        <!-- Payroll Table -->
+<!-- Payroll Table -->
+<div *ngIf="payrollPreviewList.length > 0" class="payroll-preview-table">
+  <h3>Preview Results</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>UserId</th>
+        <th>Basic Salary</th>
+        <th>House Rent</th>
+        <th>Medical</th>
+        <th>Transport</th>
+        <th>Other Allowance</th>
+        <th>Total Bonus</th>
+        <th>Total Deduction</th>
+        <th>Net Salary</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let payroll of payrollPreviewList">
+        <td>{{ payroll.userId }}</td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.basicSalary | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.houseRentAllowance | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.medicalAllowance | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.transportAllowance | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.otherAllowance | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.totalBonus | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.totalDeduction | number:'1.0-0' }}</strong></td>
+        <td><span class="bdt">BDT </span><strong>{{ payroll.netSalary | number:'1.0-0' }}</strong></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+        <div *ngIf="!payrollPreviewList.length && previewSubmitted && !previewLoading" class="no-data">
+          No payroll data found for the selected month/year.
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>

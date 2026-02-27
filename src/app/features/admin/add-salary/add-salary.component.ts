@@ -128,6 +128,9 @@ export class AddSalaryComponent implements OnInit {
 adjustSalary(userId: number) {
   this.router.navigate(['/admin/salary-adjustment', userId]);
 }
+previewPayroll(userId: number) {
+  this.router.navigate(['/admin/preview-payroll', userId]);
+}
   toggleStatus(user: UserSalary) {
     const newStatus = !user.isActive;
     if (!confirm(`Change status to ${newStatus ? 'Active' : 'Inactive'}?`)) return;

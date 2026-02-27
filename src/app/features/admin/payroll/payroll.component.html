@@ -10,8 +10,9 @@
       <button class="btn btn-primary" (click)="goToDashboard()">
         <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
       </button>
+
       <button class="btn btn-primary" (click)="gotoAddSalary()">
-        <i class="bi bi-speedometer2 me-1"></i> Add Salary
+        <i class="bi bi-cash-stack me-1"></i> Add Salary
       </button>
 
       <button class="btn btn-danger" (click)="logout()">
@@ -23,15 +24,66 @@
   <!-- Main Content -->
   <div class="main-content" [class.full-width]="isSidebarCollapsed">
     <div class="payroll-page">
-      <div class="form-container">
+
+      <!-- ============================= -->
+      <!-- Payroll History Section -->
+      <!-- ============================= -->
+      <div class="section-card">
+        <h2>Payroll History</h2>
+
+        <div class="payroll-table" *ngIf="payrollList.length > 0">
+          <table>
+            <thead>
+              <tr>
+                <th>Payroll Code</th>
+                <th>Month</th>
+                <th>Year</th>
+                <th>Total Employees</th>
+                <th>Total Basic</th>
+                <th>Total Deduction</th>
+                <th>Total Net Salary</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let payroll of payrollList">
+                <td>{{ payroll.payrollCode }}</td>
+                <td>{{ getMonthName(payroll?.month ?? 0) }}</td>
+                <td>{{ payroll.year }}</td>
+                <td>{{ payroll.totalEmployees }}</td>
+                <td>{{ payroll.totalBasicAmount | currency:'BDT':'symbol':'1.0-0' }}</td>
+                <td>{{ payroll.totalDeductionAmount | currency:'BDT':'symbol':'1.0-0' }}</td>
+                <td>{{ payroll.totalNetSalary | currency:'BDT':'symbol':'1.0-0' }}</td>
+                <td>
+                  <span [ngClass]="payroll.isLocked ? 'locked' : 'unlocked'">
+                    {{ payroll.isLocked ? 'Locked' : 'Open' }}
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div *ngIf="payrollList.length === 0" class="no-data">
+          No payroll periods found.
+        </div>
+      </div>
+
+
+      <!-- ============================= -->
+      <!-- Create Payroll Section -->
+      <!-- ============================= -->
+      <div class="section-card">
         <h2>Create Payroll Period</h2>
 
-        <form [formGroup]="payrollForm" (ngSubmit)="onSubmit()" class="payroll-form">
+        <form [formGroup]="payrollForm"
+              (ngSubmit)="onSubmit()"
+              class="payroll-form">
 
           <!-- Month -->
           <div class="form-group">
-            <label for="month">Month</label>
-            <select id="month" formControlName="month">
+            <label>Month</label>
+            <select formControlName="month">
               <option value="" disabled>Select Month</option>
               <option *ngFor="let m of months" [value]="m.value">
                 {{ m.name }}
@@ -41,44 +93,57 @@
 
           <!-- Year -->
           <div class="form-group">
-            <label for="year">Year</label>
-            <input id="year" type="number" formControlName="year" />
+            <label>Year</label>
+            <input type="number" formControlName="year" />
           </div>
 
           <!-- Start Date -->
           <div class="form-group">
-            <label for="startDate">Start Date</label>
-            <input id="startDate" type="date" formControlName="startDate" />
+            <label>Start Date</label>
+            <input type="date" formControlName="startDate" />
           </div>
 
           <!-- End Date -->
           <div class="form-group">
-            <label for="endDate">End Date</label>
-            <input id="endDate" type="date" formControlName="endDate" />
+            <label>End Date</label>
+            <input type="date" formControlName="endDate" />
           </div>
 
           <!-- Payroll Code -->
           <div class="form-group">
-            <label for="payrollCode">Payroll Code</label>
-            <input id="payrollCode" type="text" formControlName="payrollCode" readonly />
+            <label>Payroll Code</label>
+            <input type="text"
+                   formControlName="payrollCode"
+                   readonly />
           </div>
 
           <!-- Buttons -->
           <div class="button-group">
-            <button type="submit" [disabled]="payrollForm.invalid || loading" class="btn-confirm">
+            <button type="submit"
+                    [disabled]="payrollForm.invalid || loading"
+                    class="btn-confirm">
               {{ loading ? 'Creating...' : 'Create Payroll' }}
             </button>
 
-            <button type="button" (click)="onCancel()" class="btn-cancel">
+            <button type="button"
+                    (click)="onCancel()"
+                    class="btn-cancel">
               Reset
             </button>
           </div>
 
-          <div *ngIf="successMessage" class="success-message">{{ successMessage }}</div>
-          <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
+          <!-- Messages -->
+          <div *ngIf="successMessage" class="success-message">
+            {{ successMessage }}
+          </div>
+
+          <div *ngIf="errorMessage" class="error-message">
+            {{ errorMessage }}
+          </div>
 
         </form>
       </div>
+
     </div>
   </div>
 

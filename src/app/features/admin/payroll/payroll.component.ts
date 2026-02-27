@@ -1,10 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PayrollService } from '../../../core/services/payroll.service';
 
-@Component({
+@Component({  
   selector: 'app-payroll',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
@@ -14,6 +14,8 @@ import { PayrollService } from '../../../core/services/payroll.service';
 export class PayrollComponent implements OnInit {
 
   payrollForm!: FormGroup;
+  payrollList: any[] = [];   // ✅ Added for table
+
   loading = false;
   successMessage = '';
   errorMessage = '';
@@ -41,16 +43,18 @@ export class PayrollComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private payrollService: PayrollService,
-    private router: Router,
-    private cdr: ChangeDetectorRef
+    private router: Router
   ) {}
 
   ngOnInit(): void {
     this.initForm();
-    this.generatePayrollCode(); // initial code if month/year pre-filled
+    this.generatePayrollCode();
+    this.loadPayrollPeriods();   // ✅ Load table data
   }
 
-  /** Sidebar toggle */
+  // =============================
+  // Sidebar
+  // =============================
   toggleSidebar() {
     this.isSidebarCollapsed = !this.isSidebarCollapsed;
   }
@@ -58,6 +62,7 @@ export class PayrollComponent implements OnInit {
   goToDashboard() {
     this.router.navigate(['/admin/dashboard']);
   }
+
   gotoAddSalary() {
     this.router.navigate(['/admin/add-salary']);
   }
@@ -67,7 +72,9 @@ export class PayrollComponent implements OnInit {
     this.router.navigate(['/admin/login']);
   }
 
-  /** Payroll Form */
+  // =============================
+  // FORM INIT
+  // =============================
   private initForm() {
     this.payrollForm = this.fb.group({
       month: [null, Validators.required],
@@ -82,17 +89,15 @@ export class PayrollComponent implements OnInit {
     this.payrollForm.get('year')?.valueChanges.subscribe(() => this.generatePayrollCode());
   }
 
-  private getMonthName(value: number): string {
+  // ✅ MUST BE PUBLIC (used in HTML)
+  getMonthName(value: number): string {
     const month = this.months.find(m => m.value === Number(value));
     return month ? month.name : '';
   }
 
   private generatePayrollCode() {
-    const monthRaw = this.payrollForm.get('month')?.value;
-    const yearRaw = this.payrollForm.get('year')?.value;
-
-    const month = monthRaw !== null && monthRaw !== '' ? Number(monthRaw) : null;
-    const year = yearRaw !== null && yearRaw !== '' ? Number(yearRaw) : null;
+    const month = this.payrollForm.get('month')?.value;
+    const year = this.payrollForm.get('year')?.value;
 
     if (month && year) {
       const code = `PAY-${year}-${this.getMonthName(month)}`;
@@ -102,6 +107,23 @@ export class PayrollComponent implements OnInit {
     }
   }
 
+  // =============================
+  // LOAD PAYROLL HISTORY
+  // =============================
+ loadPayrollPeriods() {
+  this.payrollService.getPayrollPeriods().subscribe({
+    next: (res) => {
+      this.payrollList = res;
+    },
+    error: (err) => {
+      console.error(err);
+    }
+  });
+}
+
+  // =============================
+  // SUBMIT
+  // =============================
   onSubmit() {
     if (this.payrollForm.invalid) {
       this.payrollForm.markAllAsTouched();
@@ -113,13 +135,17 @@ export class PayrollComponent implements OnInit {
     this.successMessage = '';
     this.errorMessage = '';
 
-    const payload = { ...this.payrollForm.value, createdBy: this.userId };
+    const payload = {
+      ...this.payrollForm.value,
+      createdBy: this.userId
+    };
 
     this.payrollService.createPayrollPeriod(payload).subscribe({
       next: (res: any) => {
         this.loading = false;
         this.successMessage = res?.message || 'Payroll created successfully!';
         this.resetForm();
+        this.loadPayrollPeriods();   // ✅ Refresh table after create
       },
       error: (err: any) => {
         this.loading = false;
@@ -129,6 +155,9 @@ export class PayrollComponent implements OnInit {
     });
   }
 
+  // =============================
+  // RESET
+  // =============================
   resetForm() {
     this.payrollForm.reset({
       month: null,

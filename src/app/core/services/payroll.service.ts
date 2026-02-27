@@ -6,15 +6,31 @@ import { Observable } from 'rxjs';
 // Interfaces
 // =============================
 
+// 🔹 Create Payload Interface
 export interface PayrollPeriod {
   month: number;
   year: number;
-  startDate: string; // Format: YYYY-MM-DD
-  endDate: string;   // Format: YYYY-MM-DD
-  status?: string;   // Optional: Draft / Processing / Completed / Cancelled
+  startDate: string;
+  endDate: string;
+  status?: string;
   createdBy: number;
 }
 
+// 🔹 Payroll List Response Interface
+export interface PayrollPeriodResponse {
+  payrollPeriodId: number;
+  payrollCode: string;
+  month: number;
+  year: number;
+  totalEmployees: number;
+  totalBasicAmount: number;
+  totalBonusAmount: number;
+  totalDeductionAmount: number;
+  totalNetSalary: number;
+  isLocked: boolean;
+}
+
+// 🔹 API Response Interface
 export interface ApiResponse {
   message: string;
   payrollPeriodId?: number;
@@ -28,14 +44,28 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class PayrollService {
+
   private apiUrl = 'https://localhost:7285/api/SalaryStructure';
 
   constructor(private http: HttpClient) {}
 
   // ==========================================
-  // CREATE Payroll Period (POST)
+  // CREATE Payroll Period
   // ==========================================
   createPayrollPeriod(data: PayrollPeriod): Observable<ApiResponse> {
-    return this.http.post<ApiResponse>(`${this.apiUrl}/insertPayroll`, data);
+    return this.http.post<ApiResponse>(
+      `${this.apiUrl}/insertPayroll`,
+      data
+    );
   }
+
+  // ==========================================
+  // GET ALL Payroll Periods
+  // ==========================================
+  getPayrollPeriods(): Observable<PayrollPeriodResponse[]> {
+    return this.http.get<PayrollPeriodResponse[]>(
+      `${this.apiUrl}/getAll`
+    );
+  }
+
 }
