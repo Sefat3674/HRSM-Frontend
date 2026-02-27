@@ -7,16 +7,23 @@ import { catchError } from 'rxjs/operators';
 // Interfaces
 // =============================
 
-// Request payload for preview
+// Preview Request
 export interface PayrollPreviewRequest {
-  userId ? : number;
+  userId?: number;
   month: number;
   year: number;
 }
 
-// Response for each payroll item
+// Run Payroll Request
+export interface RunPayrollRequest {
+  userId: number;
+  month: number;
+  year: number;
+}
+
+// Preview Response
 export interface PayrollPreviewResponse {
-  UserId  : number;
+  UserId: number;
   BasicSalary: number;
   HouseRentAllowance: number;
   MedicalAllowance: number;
@@ -25,9 +32,10 @@ export interface PayrollPreviewResponse {
   TotalBonus: number;
   TotalDeduction: number;
   NetSalary: number;
+  IsLocked: number;
 }
 
-// Generic API Response (for other endpoints)
+// Generic API Response
 export interface ApiResponse {
   message: string;
   payrollPeriodId?: number;
@@ -41,6 +49,7 @@ export interface ApiResponse {
   providedIn: 'root',
 })
 export class PayrollService {
+
   private apiUrl = 'https://localhost:7285/api/SalaryStructure';
 
   constructor(private http: HttpClient) {}
@@ -57,20 +66,32 @@ export class PayrollService {
   }
 
   // ==========================================
-  // Optional: Error handler
+  // Run Payroll
+  // ==========================================
+  RunPayroll(
+    data: RunPayrollRequest
+  ): Observable<ApiResponse> {
+    return this.http
+      .post<ApiResponse>(`${this.apiUrl}/runPayroll`, data)
+      .pipe(catchError(this.handleError));
+  }
+
+  // ==========================================
+  // Error Handler
   // ==========================================
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Unknown error!';
+    let errorMessage = 'Unknown error occurred';
+
     if (error.error instanceof ErrorEvent) {
-      // Client-side / network error
-      errorMessage = `Client error: ${error.error.message}`;
+      // Client-side / Network error
+      errorMessage = `Client Error: ${error.error.message}`;
     } else {
       // Server-side error
-      errorMessage = `Server returned code ${error.status}, body was: ${JSON.stringify(
-        error.error
-      )}`;
+      errorMessage = `Server Error ${error.status}: ${JSON.stringify(error.error)}`;
     }
-    console.error(errorMessage);
+
+    console.error('PayrollService Error:', errorMessage);
+
     return throwError(() => new Error(errorMessage));
   }
 }
