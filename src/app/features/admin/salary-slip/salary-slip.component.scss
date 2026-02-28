@@ -1,0 +1,122 @@
+.slip-wrapper {
+  width: 420px;
+  background: #ffffff;
+  padding: 25px;
+  margin: 20px auto;
+  border-radius: 8px;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+  font-family: Arial, sans-serif;
+}
+
+.slip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1abc9c;
+}
+
+.month {
+  margin-top: 5px;
+  color: #666;
+  font-size: 14px;
+}
+
+.slip-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  td {
+    padding: 6px 0;
+    font-size: 14px;
+  }
+}
+
+.small td {
+  font-size: 13px;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.section-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.total td {
+  font-weight: bold;
+  padding-top: 8px;
+}
+
+.bonus-total td {
+  color: #27ae60;
+}
+
+.deduction-total td {
+  color: #e74c3c;
+}
+
+.net-section {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.net-amount {
+  color: #2c3e50;
+}
+/* ==========================
+   Download PDF Button
+========================== */
+/* ==========================
+   Download PDF Button Style
+========================== */
+.btn-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #4a90e2, #667eea);
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(135deg, #3a78d1, #556dd8);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  &:focus {
+    outline: none;
+  }
+}
+
+/* Optional: Center button within actions */
+.actions {
+  display: flex;
+  justify-content: flex-start; // or center if you want it centered
+  margin-top: 10px;
+}

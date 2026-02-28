@@ -12,6 +12,7 @@ import { AddSalaryComponent } from './add-salary/add-salary.component';
 import { SalaryAdjustmentComponent } from './salary-adjustment/salary-adjustment.component';
 import { PayrollComponent } from './payroll/payroll.component'; 
 import { PayrollReviewComponent } from './preview-payroll/preview-payroll.component';
+import { SalarySlipComponent } from './salary-slip/salary-slip.component';
 
 
 
@@ -30,7 +31,8 @@ import { PayrollReviewComponent } from './preview-payroll/preview-payroll.compon
     AddSalaryComponent,
     SalaryAdjustmentComponent,
     PayrollComponent,
-    PayrollReviewComponent
+    PayrollReviewComponent,
+    SalarySlipComponent
 
   
   ]

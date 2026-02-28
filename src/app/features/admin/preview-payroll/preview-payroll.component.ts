@@ -10,7 +10,6 @@ import {
   ApiResponse
 } from '../../../core/services/preview-payroll.service';
 
-// Payroll item interface
 interface PayrollItem {
   userId: number;
   basicSalary: number;
@@ -40,14 +39,13 @@ export class PayrollReviewComponent implements OnInit {
   previewErrorMessage = '';
   previewSubmitted = false;
 
-  runningUserId: number | null = null;   // For showing "Running..." state
+  runningUserId: number | null = null;
   userId: number | null = null;
   isSidebarCollapsed = false;
 
-  // Modal related
   isModalOpen = false;
   selectedPayroll: PayrollItem | null = null;
-  confirmCheckedControl: FormControl = new FormControl(false); // Reactive checkbox
+  confirmCheckedControl: FormControl = new FormControl(false);
 
   months = [
     { value: 1, name: 'Jan' }, { value: 2, name: 'Feb' },
@@ -68,11 +66,29 @@ export class PayrollReviewComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    this.initForm();
+
     if (isPlatformBrowser(this.platformId)) {
       const idFromRoute = this.route.snapshot.paramMap.get('id');
       this.userId = idFromRoute ? Number(idFromRoute) : null;
     }
-    this.initForm();
+
+    // Auto-preview if route has a userId
+    if (this.userId) {
+      this.onPreview(this.userId);
+    }
+  }
+
+  private initForm(): void {
+    this.previewForm = this.fb.group({
+      month: [null, Validators.required],
+      year: [new Date().getFullYear(), Validators.required]
+    });
+  }
+
+  getMonthName(value: number): string {
+    const month = this.months.find(m => m.value === Number(value));
+    return month ? month.name : '';
   }
 
   toggleSidebar(): void {
@@ -90,22 +106,10 @@ export class PayrollReviewComponent implements OnInit {
     this.router.navigate(['/admin/login']);
   }
 
-  private initForm(): void {
-    this.previewForm = this.fb.group({
-      month: [null, Validators.required],
-      year: [new Date().getFullYear(), Validators.required]
-    });
-  }
-
-  getMonthName(value: number): string {
-    const month = this.months.find(m => m.value === Number(value));
-    return month ? month.name : '';
-  }
-
   // ==========================
   // Preview Payroll
   // ==========================
-  onPreview(): void {
+  onPreview(userId?: number): void {
     if (this.previewForm.invalid) {
       this.previewForm.markAllAsTouched();
       this.previewErrorMessage = 'Please select month and year.';
@@ -117,7 +121,7 @@ export class PayrollReviewComponent implements OnInit {
     this.previewSubmitted = true;
 
     const payload = {
-      userId: this.userId ?? undefined,
+      userId: userId ?? this.userId ?? undefined,
       month: this.previewForm.value.month,
       year: this.previewForm.value.year
     };
@@ -125,7 +129,6 @@ export class PayrollReviewComponent implements OnInit {
     this.payrollService.PreviewPayroll(payload).subscribe({
       next: (res: PayrollPreviewResponse[]) => {
         this.previewLoading = false;
-
         this.payrollPreviewList = (res || []).map(item => ({
           userId: item.UserId,
           basicSalary: item.BasicSalary,
@@ -153,13 +156,10 @@ export class PayrollReviewComponent implements OnInit {
     });
   }
 
-  // ==========================
-  // Run Payroll modal
-  // ==========================
   openPayrollModal(payroll: PayrollItem) {
     if (payroll.isLocked) return;
     this.selectedPayroll = payroll;
-    this.confirmCheckedControl.setValue(false); // Reset reactive checkbox
+    this.confirmCheckedControl.setValue(false);
     this.isModalOpen = true;
   }
 
@@ -174,13 +174,8 @@ export class PayrollReviewComponent implements OnInit {
     this.closeModal();
   }
 
-  // ==========================
-  // Run Payroll per row
-  // ==========================
   runPayroll(userId: number, payroll: PayrollItem): void {
-
-    if (payroll.isLocked) return;  // Already locked
-
+    if (payroll.isLocked) return;
     if (this.previewForm.invalid) {
       this.previewErrorMessage = 'Please select month and year first.';
       return;
@@ -198,8 +193,6 @@ export class PayrollReviewComponent implements OnInit {
       next: (res: ApiResponse) => {
         this.runningUserId = null;
         alert(res.message || 'Payroll executed successfully!');
-
-        // Update row to locked after successful run
         const row = this.payrollPreviewList.find(p => p.userId === userId);
         if (row) row.isLocked = true;
         this.cdr.detectChanges();
@@ -211,19 +204,27 @@ export class PayrollReviewComponent implements OnInit {
       }
     });
   }
+
   viewSalarySlip(userId: number | string) {
-    this.router.navigate(['/admin/salary-slip', userId]);
+  if (!userId) {
+    alert('User ID not found!');
+    return;
   }
 
-  // ==========================
-  // Reset Form & Table
-  // ==========================
+  // Pass month and year as query params
+  this.router.navigate(['/admin/salary-slip', userId], {
+    queryParams: {
+      month: this.previewForm.value.month,
+      year: this.previewForm.value.year
+    }
+  });
+}
+
   onPreviewReset(): void {
     this.previewForm.reset({
       month: null,
       year: new Date().getFullYear()
     });
-
     this.payrollPreviewList = [];
     this.previewErrorMessage = '';
     this.previewSubmitted = false;

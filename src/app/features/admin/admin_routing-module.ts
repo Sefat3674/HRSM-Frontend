@@ -10,6 +10,7 @@ import { EditSalaryComponent } from './edit-salary/edit-salary.component';
 import { SalaryAdjustmentComponent } from './salary-adjustment/salary-adjustment.component';
 import { PayrollComponent } from './payroll/payroll.component';
 import {PayrollReviewComponent} from './preview-payroll/preview-payroll.component';
+import { SalarySlipComponent } from './salary-slip/salary-slip.component';
 
 
 
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'salary-adjustment/:id', component: SalaryAdjustmentComponent },
    {path: 'payroll',component:PayrollComponent},
    { path: 'preview-payroll', component: PayrollReviewComponent },
+   {path: 'salary-slip/:id',component:SalarySlipComponent},
   
  
     
