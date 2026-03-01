@@ -52,6 +52,10 @@ export class AddSalaryComponent implements OnInit {
   goToDashboard() {
     this.router.navigate(['/admin/dashboard']);
   }
+  CreatePayrollPeriod() {
+    this.router.navigate(['/admin/payroll']);
+  }
+
   goToPayroll() {
     this.router.navigate(['/admin/preview-payroll']);
   }
@@ -131,6 +135,8 @@ export class AddSalaryComponent implements OnInit {
 adjustSalary(userId: number) {
   this.router.navigate(['/admin/salary-adjustment', userId]);
 }
+
+
 previewPayroll(userId: number) {
   this.router.navigate(['/admin/preview-payroll', userId]);
 }

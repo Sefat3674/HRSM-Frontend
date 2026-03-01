@@ -47,6 +47,11 @@ export class PayrollReviewComponent implements OnInit {
   selectedPayroll: PayrollItem | null = null;
   confirmCheckedControl: FormControl = new FormControl(false);
 
+  // Run All
+  isRunningAll = false;
+  isRunAllModalOpen = false;
+  confirmRunAllChecked: FormControl = new FormControl(false);
+
   months = [
     { value: 1, name: 'Jan' }, { value: 2, name: 'Feb' },
     { value: 3, name: 'Mar' }, { value: 4, name: 'Apr' },
@@ -73,7 +78,6 @@ export class PayrollReviewComponent implements OnInit {
       this.userId = idFromRoute ? Number(idFromRoute) : null;
     }
 
-    // Auto-preview if route has a userId
     if (this.userId) {
       this.onPreview(this.userId);
     }
@@ -97,6 +101,13 @@ export class PayrollReviewComponent implements OnInit {
 
   goToDashboard(): void {
     this.router.navigate(['/admin/dashboard']);
+  }
+  goToAddSalary(): void {
+    this.router.navigate(['/admin/add-salary']);
+  }
+
+  CreatePayRoll(): void {
+    this.router.navigate(['/admin/payroll']);
   }
 
   logout(): void {
@@ -156,19 +167,22 @@ export class PayrollReviewComponent implements OnInit {
     });
   }
 
-  openPayrollModal(payroll: PayrollItem) {
+  // ==========================
+  // Single Payroll Modal
+  // ==========================
+  openPayrollModal(payroll: PayrollItem): void {
     if (payroll.isLocked) return;
     this.selectedPayroll = payroll;
     this.confirmCheckedControl.setValue(false);
     this.isModalOpen = true;
   }
 
-  closeModal() {
+  closeModal(): void {
     this.isModalOpen = false;
     this.selectedPayroll = null;
   }
 
-  confirmRunPayroll() {
+  confirmRunPayroll(): void {
     if (!this.selectedPayroll || !this.confirmCheckedControl.value) return;
     this.runPayroll(this.selectedPayroll.userId, this.selectedPayroll);
     this.closeModal();
@@ -205,21 +219,111 @@ export class PayrollReviewComponent implements OnInit {
     });
   }
 
-  viewSalarySlip(userId: number | string) {
-  if (!userId) {
-    alert('User ID not found!');
-    return;
+  // ==========================
+  // Run All Payroll Modal
+  // ==========================
+  openRunAllModal(): void {
+    if (this.previewForm.invalid) {
+      this.previewErrorMessage = 'Please select month and year first.';
+      return;
+    }
+
+    const unlockedCount = this.payrollPreviewList.filter(p => !p.isLocked).length;
+    if (unlockedCount === 0) {
+      alert('All payrolls are already processed.');
+      return;
+    }
+
+    this.confirmRunAllChecked.setValue(false);
+    this.isRunAllModalOpen = true;
   }
 
-  // Pass month and year as query params
-  this.router.navigate(['/admin/salary-slip', userId], {
-    queryParams: {
-      month: this.previewForm.value.month,
-      year: this.previewForm.value.year
-    }
-  });
-}
+  closeRunAllModal(): void {
+    this.isRunAllModalOpen = false;
+  }
 
+  confirmRunAllPayroll(): void {
+    if (!this.confirmRunAllChecked.value) return;
+    this.closeRunAllModal();
+    this.runAllPayroll();
+  }
+
+  get unlockedCount(): number {
+    return this.payrollPreviewList.filter(p => !p.isLocked).length;
+  }
+
+  runAllPayroll(): void {
+    if (this.previewForm.invalid) {
+      this.previewErrorMessage = 'Please select month and year first.';
+      return;
+    }
+
+    const unlockedPayrolls = this.payrollPreviewList.filter(p => !p.isLocked);
+    if (unlockedPayrolls.length === 0) {
+      alert('All payrolls are already processed.');
+      return;
+    }
+
+    this.isRunningAll = true;
+    const month = this.previewForm.value.month;
+    const year = this.previewForm.value.year;
+    let completed = 0;
+    let hasError = false;
+
+    unlockedPayrolls.forEach(payroll => {
+      const payload: RunPayrollRequest = {
+        userId: payroll.userId,
+        month,
+        year
+      };
+
+      this.payrollService.RunPayroll(payload).subscribe({
+        next: (res: ApiResponse) => {
+          const row = this.payrollPreviewList.find(p => p.userId === payroll.userId);
+          if (row) row.isLocked = true;
+          completed++;
+          if (completed === unlockedPayrolls.length) {
+            this.isRunningAll = false;
+            alert(hasError
+              ? 'Some payrolls failed. Please check the console for details.'
+              : 'All payrolls executed successfully!'
+            );
+            this.cdr.detectChanges();
+          }
+        },
+        error: (err: Error) => {
+          hasError = true;
+          completed++;
+          console.error(`Payroll failed for userId ${payroll.userId}:`, err);
+          if (completed === unlockedPayrolls.length) {
+            this.isRunningAll = false;
+            alert('Some payrolls failed. Please check the console for details.');
+            this.cdr.detectChanges();
+          }
+        }
+      });
+    });
+  }
+
+  // ==========================
+  // Salary Slip
+  // ==========================
+  viewSalarySlip(userId: number | string): void {
+    if (!userId) {
+      alert('User ID not found!');
+      return;
+    }
+    this.router.navigate(['/admin/salary-slip', userId], {
+      queryParams: {
+        month: this.previewForm.value.month,
+        year: this.previewForm.value.year
+      }
+    });
+  }
+
+  // ==========================
+  // Reset
+  // ==========================
   onPreviewReset(): void {
     this.previewForm.reset({
       month: null,

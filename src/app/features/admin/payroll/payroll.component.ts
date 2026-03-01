@@ -62,6 +62,9 @@ export class PayrollComponent implements OnInit {
   goToDashboard() {
     this.router.navigate(['/admin/dashboard']);
   }
+  PreviewPayroll() {
+    this.router.navigate(['/admin/preview-payroll']);
+  }
 
   gotoAddSalary() {
     this.router.navigate(['/admin/add-salary']);

@@ -10,6 +10,9 @@
       <button class="btn btn-primary" (click)="goToDashboard()">
         <i class="bi bi-speedometer2 me-1"></i> Admin Dashboard
       </button>
+      <button class="btn btn-primary" (click)="PreviewPayroll()">
+        <i class="bi bi-speedometer2 me-1"></i> Preview Payroll
+      </button>
 
       <button class="btn btn-primary" (click)="gotoAddSalary()">
         <i class="bi bi-cash-stack me-1"></i> Add Salary
@@ -39,7 +42,8 @@
                 <th>Month</th>
                 <th>Year</th>
                 <th>Total Employees</th>
-                <th>Total Basic</th>
+                <th>Total Basic Amount</th>
+                <th>Total Bonus</th>
                 <th>Total Deduction</th>
                 <th>Total Net Salary</th>
                 <th>Status</th>
@@ -52,8 +56,9 @@
                 <td>{{ payroll.year }}</td>
                 <td>{{ payroll.totalEmployees }}</td>
                 <td>{{ payroll.totalBasicAmount | currency:'BDT':'symbol':'1.0-0' }}</td>
+                <td>{{ payroll.totalBonusAmount | currency:'BDT':'symbol':'1.0-0' }}</td>
                 <td>{{ payroll.totalDeductionAmount | currency:'BDT':'symbol':'1.0-0' }}</td>
-                <td>{{ payroll.totalNetSalary | currency:'BDT':'symbol':'1.0-0' }}</td>
+                <td>{{ payroll.totalNetSalaryAmount | currency:'BDT':'symbol':'1.0-0' }}</td>
                 <td>
                   <span [ngClass]="payroll.isLocked ? 'locked' : 'unlocked'">
                     {{ payroll.isLocked ? 'Locked' : 'Open' }}

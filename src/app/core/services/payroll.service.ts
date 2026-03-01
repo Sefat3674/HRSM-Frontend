@@ -26,7 +26,7 @@ export interface PayrollPeriodResponse {
   totalBasicAmount: number;
   totalBonusAmount: number;
   totalDeductionAmount: number;
-  totalNetSalary: number;
+  totalNetSalaryAmount: number;
   isLocked: boolean;
 }
 

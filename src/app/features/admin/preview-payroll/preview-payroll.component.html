@@ -7,6 +7,7 @@
     </button>
     <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
       <button class="btn btn-primary" (click)="goToDashboard()">Dashboard</button>
+      <button class="btn btn-primary" (click)="CreatePayRoll()">Create Payroll Period</button>
       <button class="btn btn-danger" (click)="logout()">Logout</button>
     </div>
   </div>
@@ -45,7 +46,21 @@
 
         <!-- Payroll Table -->
         <div *ngIf="payrollPreviewList.length > 0" class="payroll-preview-table">
-          <h3>Preview Results</h3>
+
+          <!-- Table Header Row with Run All Button -->
+          <div class="table-header-row">
+            <h3>Preview Results</h3>
+            <button class="btn btn-primary" (click)="goToAddSalary()">add-salary</button>
+            <button
+              class="btn-run-all"
+              (click)="openRunAllModal()"
+              [disabled]="isRunningAll || unlockedCount === 0">
+              <i class="bi bi-play-circle-fill"></i>
+              {{ isRunningAll ? 'Running All...' : 'Run All Payroll (' + unlockedCount + ')' }}
+            </button>
+            
+          </div>
+
           <table>
             <thead>
               <tr>
@@ -59,7 +74,6 @@
                 <th>Total Deduction</th>
                 <th>Net Salary</th>
                 <th>Action</th>
-               
               </tr>
             </thead>
             <tbody>
@@ -74,24 +88,26 @@
                 <td><span class="bdt">BDT </span><strong>{{ payroll.totalDeduction | number:'1.0-0' }}</strong></td>
                 <td><span class="bdt">BDT </span><strong>{{ payroll.netSalary | number:'1.0-0' }}</strong></td>
                 <td class="text-center">
-  <!-- Run Payroll Button -->
-  <button
-    *ngIf="!payroll.isLocked"
-    class="btn-run-payroll"
-    (click)="openPayrollModal(payroll)"
-    [disabled]="runningUserId === payroll.userId">
-    <i class="bi bi-play-fill"></i>
-    {{ runningUserId === payroll.userId ? 'Running...' : 'Run Payroll' }}
-  </button>
 
-  <!-- Salary Slip Button (appears if payroll is locked) -->
-  <button
-    *ngIf="payroll.isLocked"
-    class="btn-salary-slip"
-    (click)="viewSalarySlip(payroll.userId)">
-    <i class="bi bi-file-earmark-text"></i> Salary Slip
-  </button>
-</td>
+                  <!-- Run Payroll Button -->
+                  <button
+                    *ngIf="!payroll.isLocked"
+                    class="btn-run-payroll"
+                    (click)="openPayrollModal(payroll)"
+                    [disabled]="runningUserId === payroll.userId || isRunningAll">
+                    <i class="bi bi-play-fill"></i>
+                    {{ runningUserId === payroll.userId ? 'Running...' : 'Run Payroll' }}
+                  </button>
+
+                  <!-- Salary Slip Button -->
+                  <button
+                    *ngIf="payroll.isLocked"
+                    class="btn-salary-slip"
+                    (click)="viewSalarySlip(payroll.userId)">
+                    <i class="bi bi-file-earmark-text"></i> Salary Slip
+                  </button>
+
+                </td>
               </tr>
             </tbody>
           </table>
@@ -106,23 +122,49 @@
   </div>
 
   <!-- ==========================
-       Payroll Modal
+       Single Run Payroll Modal
        ========================== -->
-  <div class="modal" *ngIf="isModalOpen">
-    <div class="modal-content">
+  <div class="modal-overlay" *ngIf="isModalOpen" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
       <h3>Confirm Run Payroll</h3>
-      <p>Are you sure you want to run payroll for User ID: {{ selectedPayroll?.userId }}?</p>
+      <p>Are you sure you want to run payroll for <strong>User ID: {{ selectedPayroll?.userId }}</strong>?</p>
 
       <div class="form-check">
         <input type="checkbox" [formControl]="confirmCheckedControl" id="confirmCheckbox" />
-        <label for="confirmCheckbox">I confirm to run payroll</label>
+        <label for="confirmCheckbox">I confirm to run payroll for this employee</label>
       </div>
 
       <div class="modal-buttons">
         <button class="btn-confirm" (click)="confirmRunPayroll()" [disabled]="!confirmCheckedControl.value">
-          Run Payroll
+          <i class="bi bi-play-fill"></i> Run Payroll
         </button>
         <button class="btn-cancel" (click)="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================
+       Run All Payroll Modal
+       ========================== -->
+  <div class="modal-overlay" *ngIf="isRunAllModalOpen" (click)="closeRunAllModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h3>Confirm Run All Payroll</h3>
+      <p>
+        You are about to run payroll for <strong>{{ unlockedCount }} employee(s)</strong>
+        for <strong>{{ getMonthName(previewForm.value.month) }} {{ previewForm.value.year }}</strong>.
+        This action cannot be undone.
+      </p>
+
+      <div class="form-check">
+        <input type="checkbox" [formControl]="confirmRunAllChecked" id="confirmRunAllCheckbox" />
+        <label for="confirmRunAllCheckbox">I confirm to run payroll for all employees listed above</label>
+      </div>
+
+      <div class="modal-buttons">
+        <button class="btn-confirm btn-run-all-confirm" (click)="confirmRunAllPayroll()" [disabled]="!confirmRunAllChecked.value">
+          <i class="bi bi-play-circle-fill"></i> Run All Payroll
+        </button>
+        <button class="btn-cancel" (click)="closeRunAllModal()">Cancel</button>
       </div>
     </div>
   </div>

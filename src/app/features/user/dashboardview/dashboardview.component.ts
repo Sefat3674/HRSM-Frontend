@@ -1,5 +1,8 @@
-import { Component, OnInit, Inject, PLATFORM_ID, HostListener, NgZone, ChangeDetectorRef } from '@angular/core';
-import { CommonModule, isPlatformBrowser } from '@angular/common';
+import {
+  Component, OnInit, Inject, PLATFORM_ID,
+  HostListener, NgZone, ChangeDetectorRef
+} from '@angular/core';
+import { CommonModule, isPlatformBrowser, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AttendanceCalendarComponent } from '../attendance-calendar/attendance-calendar.component';
 import { User } from '../../../core/services/user.service';
@@ -9,25 +12,26 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-dashboard-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, AttendanceCalendarComponent],
+  imports: [CommonModule, FormsModule, AttendanceCalendarComponent, DecimalPipe],
   templateUrl: './dashboardview.component.html',
   styleUrls: ['./dashboardview.component.scss']
 })
 export class DashboardViewComponent implements OnInit {
+
   user: User | null = null;
   salary: UserSalary | null = null;
-  isBrowser: boolean = false;
-  loadingSalary: boolean = false;
+  isBrowser = false;
+  loadingSalary = false;
 
-  showProfileDropdown: boolean = false;
-  hasNotifications: boolean = true;
-  searchQuery: string = '';
+  showProfileDropdown = false;
+  hasNotifications = true;
+  searchQuery = '';
 
   constructor(
     private salaryService: EditSalaryService,
     private router: Router,
-    private ngZone: NgZone,           // ← ADDED
-    private cdr: ChangeDetectorRef,   // ← ADDED
+    private ngZone: NgZone,           // ← fixes view update outside Angular zone
+    private cdr: ChangeDetectorRef,   // ← forces re-render after async callbacks
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -42,12 +46,12 @@ export class DashboardViewComponent implements OnInit {
     }
 
     this.user = {
-      userId: Number(userId),
-      fullName: localStorage.getItem('fullName') || '',
-      email: localStorage.getItem('email') || '',
-      roleName: localStorage.getItem('userRole') || '',
-      userName: localStorage.getItem('userName') || '',
-      phone: localStorage.getItem('phone') || '',
+      userId:     Number(userId),
+      fullName:   localStorage.getItem('fullName')   || '',
+      email:      localStorage.getItem('email')      || '',
+      roleName:   localStorage.getItem('userRole')   || '',
+      userName:   localStorage.getItem('userName')   || '',
+      phone:      localStorage.getItem('phone')      || '',
       profilePic: localStorage.getItem('profilePic') || ''
     };
 
@@ -56,22 +60,22 @@ export class DashboardViewComponent implements OnInit {
 
   loadSalary(userId: number): void {
     this.loadingSalary = true;
-    this.cdr.markForCheck();  // ← trigger spinner immediately
+    this.cdr.markForCheck(); // show spinner immediately
 
     this.salaryService.getSalaryById(userId).subscribe({
       next: (response) => {
-        this.ngZone.run(() => {                                      // ← ADDED
+        this.ngZone.run(() => {
           this.salary = response?.length > 0 ? response[0] : null;
           this.loadingSalary = false;
-          this.cdr.markForCheck();                                   // ← ADDED
+          this.cdr.markForCheck();
         });
       },
-      error: (error) => {
-        console.error('Error fetching salary:', error);
-        this.ngZone.run(() => {                                      // ← ADDED
+      error: (err) => {
+        console.error('Error fetching salary:', err);
+        this.ngZone.run(() => {
           this.salary = null;
           this.loadingSalary = false;
-          this.cdr.markForCheck();                                   // ← ADDED
+          this.cdr.markForCheck();
         });
       }
     });
@@ -80,12 +84,16 @@ export class DashboardViewComponent implements OnInit {
   getTotalSalary(): number {
     if (!this.salary) return 0;
     return (
-      (this.salary.basicSalary || 0) +
-      (this.salary.houseRentAllowance || 0) +
-      (this.salary.medicalAllowance || 0) +
-      (this.salary.transportAllowance || 0) +
-      (this.salary.otherAllowance || 0)
+      (this.salary.basicSalary          || 0) +
+      (this.salary.houseRentAllowance   || 0) +
+      (this.salary.medicalAllowance     || 0) +
+      (this.salary.transportAllowance   || 0) +
+      (this.salary.otherAllowance       || 0)
     );
+  }
+
+  getAvatarInitial(): string {
+    return this.user?.fullName?.charAt(0)?.toUpperCase() ?? '?';
   }
 
   logout(): void {
@@ -106,12 +114,20 @@ export class DashboardViewComponent implements OnInit {
     this.searchQuery = query;
   }
 
+  // Ctrl + / focuses the search box
   @HostListener('window:keydown', ['$event'])
-  handleKeyDown(event: KeyboardEvent) {
+  handleKeyDown(event: KeyboardEvent): void {
     if ((event.ctrlKey || event.metaKey) && event.key === '/') {
       event.preventDefault();
-      const input = document.querySelector<HTMLInputElement>('.search-box input');
-      input?.focus();
+      document.querySelector<HTMLInputElement>('.search-box input')?.focus();
+    }
+  }
+
+  // Click outside profile closes the dropdown
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent): void {
+    if (!(event.target as HTMLElement).closest('.profile')) {
+      this.showProfileDropdown = false;
     }
   }
 }
