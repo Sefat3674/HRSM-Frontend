@@ -13,6 +13,8 @@ export interface User {
   roleId?: number;  // optional
   isActive?: boolean; 
   token?: string;
+   name?: string;
+  profilePic?: string;
 }
 
 export interface Attendance {

@@ -1,24 +1,81 @@
-<div class="user-dashboard-container">
-  <!-- ================= SIDEBAR ================= -->
-  <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
-    <button class="toggle-btn" (click)="toggleSidebar()">
-      {{ isSidebarCollapsed ? '▶' : '◀' }}
-    </button>
+<div class="layout-wrapper">
 
-    <div class="sidebar-buttons" *ngIf="!isSidebarCollapsed">
-      <button class="btn" (click)="goToDashboard()">Dashboard</button>
-      <button class="btn" (click)="gotoAttendance()">Attendance</button>
-      <button class="btn" (click)="showUserTable()" *ngIf="user?.roleName==='Admin'">User Table</button>
-      <button class="btn" (click)="showUserSalary()" *ngIf="user?.roleName==='Admin'">Add Salary</button>
-      <button class="btn" (click)="showPayroll()" *ngIf="user?.roleName==='Admin'">Users PayRoll</button>
-      <button class="btn" (click)="reviewPayroll()" *ngIf="user?.roleName==='Admin'">Preview PayRoll</button>
-      <button class="btn" (click)="showProfile()">Profile</button>
-      <button class="btn btn-logout" (click)="logout()">Logout</button>
+  <!-- ================= TOP NAVIGATION ================= -->
+  <div class="top-nav">
+    <div class="nav-left">
+      <div class="logo">
+        <div class="logo-circle">
+          <span class="material-icons-outlined">Sefat</span>
+        </div>
+        <span class="logo-text">Sefat's<span class="highlight">HRSM</span></span>
+      </div>
+    </div>
+
+    <div class="nav-center">
+      <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/attendance" routerLinkActive="active">Attendance</a>
+      <a routerLink="/profile" routerLinkActive="active">Profile</a>
+    </div>
+
+    <div class="nav-right">
+      <div class="search-box">
+        <span class="material-icons-outlined search-icon">search</span>
+        <input type="text" placeholder="Search..." />
+      </div>
+
+      <button class="nav-icon notification">
+        <span class="material-icons-outlined">notifications</span>
+        <span class="dot" *ngIf="hasNotifications"></span>
+      </button>
+
+      <div class="profile" (click)="toggleProfileMenu()">
+        <img [src]="user?.profilePic || 'assets/profile.jpg'">
+        <div class="profile-menu" *ngIf="showProfileDropdown">
+          <a routerLink="/profile">My Profile</a>
+          <a (click)="logout()">Logout</a>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- ================= MAIN CONTENT ================= -->
-  <div class="main-content">
-    <router-outlet></router-outlet> <!-- <--- child views render here -->
+  <!-- ================= BODY LAYOUT ================= -->
+  <div class="body-layout">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" [class.collapsed]="isSidebarCollapsed">
+
+      <button class="toggle-btn" (click)="toggleSidebar()">
+        {{ isSidebarCollapsed ? '▶' : '◀' }}
+      </button>
+
+      <div class="sidebar-buttons">
+        <button (click)="goToDashboard()">Dashboard</button>
+        <button (click)="gotoAttendance()">Attendance</button>
+        <button *ngIf="user?.roleName==='Admin'" (click)="showUserTable()">User Table</button>
+        <button *ngIf="user?.roleName==='Admin'" (click)="showUserSalary()">Add Salary</button>
+        <button (click)="showProfile()">Profile</button>
+      </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+      <h1 class="page-title">Welcome, {{ user?.fullName || 'User' }}</h1>
+
+      <div class="dashboard-cards">
+        <div class="card" *ngFor="let card of kpiCards">
+          <h3>{{ card.title }}</h3>
+          <p>{{ card.value }}</p>
+        </div>
+      </div>
+
+      <div class="chart-container">
+        <h2>Employees by Department</h2>
+        <canvas id="departmentChart"></canvas>
+      </div>
+
+      <router-outlet></router-outlet>
+    </div>
+
   </div>
+
 </div>
