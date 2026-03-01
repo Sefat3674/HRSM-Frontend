@@ -37,7 +37,12 @@
             "outputMode": "server",
             "ssr": {
               "entry": "src/server.ts"
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "jspdf",
+              "canvg",
+              "core-js"
+            ]
           },
           "configurations": {
             "production": {

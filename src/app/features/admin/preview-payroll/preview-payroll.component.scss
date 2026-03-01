@@ -316,22 +316,51 @@ $font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
 }
 
 /* ===================== Run Payroll Button ===================== */
-.btn-run-payroll {
-  background: linear-gradient(135deg, #4a90e2, #667eea);
-  color: #fff;
-  font-weight: 700;
-  padding: 10px 18px;
-  border-radius: 14px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-
-  &:hover:not(:disabled) {
-    transform: scale(1.05);
+/* ===================== Payroll Table Buttons ===================== */
+.payroll-preview-table {
+  button.btn-run-payroll,
+  button.btn-salary-slip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    font-weight: 700;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
   }
 
-  &:disabled {
-    background: color.adjust(#4a90e2, $lightness: 35%);
-    cursor: not-allowed;
+  /* Run Payroll Button */
+  .btn-run-payroll {
+    background: linear-gradient(135deg, $primary-color, $secondary-color);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(74,144,226,0.4);
+    }
+
+    &:disabled {
+      background: color.adjust($primary-color, $lightness: 35%);
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+  }
+
+  /* Salary Slip Button */
+  .btn-salary-slip {
+    background: linear-gradient(135deg, $error-color, #f39c12);
+    color: #fff;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 20px rgba(226,74,74,0.4);
+    }
+  }
+
+  i {
+    font-size: 1.1rem;
   }
 }

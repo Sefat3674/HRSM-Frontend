@@ -1,96 +1,107 @@
 <div class="salary-slip-container">
 
-  <!-- Loading spinner -->
-  <div *ngIf="loading" class="loading">
-    Loading salary slips...
-  </div>
+  <!-- SSR-safe wrapper: only show in browser -->
+  <ng-container *ngIf="isBrowser">
 
-  <!-- No data message -->
-  <div *ngIf="!loading && noData" class="no-data">
-    No salary slips found for the selected month/year.
-  </div>
-
-  <!-- Salary Slips -->
-  <div class="slip-wrapper" *ngFor="let slip of salarySlips">
-
-    <!-- Header -->
-    <div class="slip-header">
-      <div class="title">Salary Slip - {{ slip.userName }}</div>
-      <div class="amount">৳ {{ slip.netSalary | number:'1.2-2' }}</div>
+    <!-- Loading spinner -->
+    <div *ngIf="loading" class="loading">
+      Loading salary slips...
     </div>
 
-    <div class="month">
-      Month: {{ slip.monthName }} / {{ slip.salaryYear }}
+    <!-- No data message -->
+    <div *ngIf="!loading && noData" class="no-data">
+      No salary slips found for the selected month/year.
     </div>
 
-    <hr />
+    <!-- Salary Slips -->
+    <div class="slip-wrapper" *ngFor="let slip of salarySlips">
 
-    <!-- Earnings Section -->
-    <table class="slip-table">
-      <tr>
-        <td>Basic Salary</td>
-        <td class="text-right">{{ slip.basicSalary | number:'1.2-2' }}</td>
-      </tr>
-      <tr>
-        <td>House Rent</td>
-        <td class="text-right">{{ slip.houseRentAllowance | number:'1.2-2' }}</td>
-      </tr>
-      <tr>
-        <td>Medical</td>
-        <td class="text-right">{{ slip.medicalAllowance | number:'1.2-2' }}</td>
-      </tr>
-      <tr>
-        <td>Other</td>
-        <td class="text-right">{{ slip.otherAllowance | number:'1.2-2' }}</td>
-      </tr>
-    </table>
+      <!-- Header -->
+      <div class="slip-header">
+        <div class="title">Salary Slip - {{ slip.userName }}</div>
+        <div class="amount">৳ {{ slip.netSalary | number:'1.2-2' }}</div>
+      </div>
 
-    <hr />
+      <div class="month">
+        Month: {{ getMonthName(slip.salaryMonth) }} / {{ slip.salaryYear }}
+      </div>
 
-    <!-- Bonus Section -->
-    <div *ngIf="slip.bonusDetails">
-      <div class="section-title">Bonus Details</div>
-      <table class="slip-table small">
-        <tr *ngFor="let bonus of parseDetails(slip.bonusDetails)">
-          <td>{{ bonus.title }}</td>
-          <td class="text-right">{{ bonus.amount | number:'1.2-2' }}</td>
+      <hr />
+
+      <!-- Earnings Section -->
+      <table class="slip-table">
+        <tr>
+          <td>Basic Salary</td>
+          <td class="text-right">{{ slip.basicSalary | number:'1.2-2' }}</td>
         </tr>
-        <tr class="total bonus-total">
-          <td>Total Bonus</td>
-          <td class="text-right">{{ slip.totalBonus | number:'1.2-2' }}</td>
+        <tr>
+          <td>House Rent</td>
+          <td class="text-right">{{ slip.houseRentAllowance | number:'1.2-2' }}</td>
+        </tr>
+        <tr>
+          <td>Medical</td>
+          <td class="text-right">{{ slip.medicalAllowance | number:'1.2-2' }}</td>
+        </tr>
+        <tr>
+          <td>Other</td>
+          <td class="text-right">{{ slip.otherAllowance | number:'1.2-2' }}</td>
         </tr>
       </table>
+
       <hr />
+
+      <!-- Bonus Section -->
+      <div *ngIf="slip.bonusDetails">
+        <div class="section-title">Bonus Details</div>
+        <table class="slip-table small">
+          <tr *ngFor="let bonus of parseDetails(slip.bonusDetails)">
+            <td>{{ bonus.title }}</td>
+            <td class="text-right">{{ bonus.amount | number:'1.2-2' }}</td>
+          </tr>
+          <tr class="total bonus-total">
+            <td>Total Bonus</td>
+            <td class="text-right">{{ slip.totalBonus | number:'1.2-2' }}</td>
+          </tr>
+        </table>
+        <hr />
+      </div>
+
+      <!-- Deduction Section -->
+      <div *ngIf="slip.deductionDetails">
+        <div class="section-title">Deduction Details</div>
+        <table class="slip-table small">
+          <tr *ngFor="let deduction of parseDetails(slip.deductionDetails)">
+            <td>{{ deduction.title }}</td>
+            <td class="text-right">{{ deduction.amount | number:'1.2-2' }}</td>
+          </tr>
+          <tr class="total deduction-total">
+            <td>Total Deduction</td>
+            <td class="text-right">{{ slip.totalDeduction | number:'1.2-2' }}</td>
+          </tr>
+        </table>
+        <hr />
+      </div>
+
+      <!-- Net Salary -->
+      <div class="net-section">
+        <span>Net Salary</span>
+        <span class="net-amount">৳ {{ slip.netSalary | number:'1.2-2' }}</span>
+      </div>
+
+      <!-- PDF Download Button -->
+      <div class="actions" style="margin-top: 10px;">
+        <button (click)="downloadSlip(slip.userId)" class="btn-download">
+          Download PDF
+        </button>
+      </div>
+
     </div>
 
-    <!-- Deduction Section -->
-    <div *ngIf="slip.deductionDetails">
-      <div class="section-title">Deduction Details</div>
-      <table class="slip-table small">
-        <tr *ngFor="let deduction of parseDetails(slip.deductionDetails)">
-          <td>{{ deduction.title }}</td>
-          <td class="text-right">{{ deduction.amount | number:'1.2-2' }}</td>
-        </tr>
-        <tr class="total deduction-total">
-          <td>Total Deduction</td>
-          <td class="text-right">{{ slip.totalDeduction | number:'1.2-2' }}</td>
-        </tr>
-      </table>
-      <hr />
-    </div>
+  </ng-container>
 
-    <!-- Net Salary -->
-    <div class="net-section">
-      <span>Net Salary</span>
-      <span class="net-amount">৳ {{ slip.netSalary | number:'1.2-2' }}</span>
-    </div>
-
-    <!-- PDF Download Button -->
-    <div class="actions" style="margin-top: 10px;">
-      <button (click)="downloadSlip(slip.userId)" class="btn-download">
-        Download PDF
-      </button>
-    </div>
-
+  <!-- SSR Placeholder -->
+  <div *ngIf="!isBrowser" class="loading">
+    Preparing salary slips...
   </div>
+
 </div>

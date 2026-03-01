@@ -1,5 +1,5 @@
-import { Component, OnInit, NgZone } from '@angular/core';
-import { CommonModule, DecimalPipe } from '@angular/common';
+import { Component, OnInit, Inject, PLATFORM_ID, ChangeDetectorRef } from '@angular/core';
+import { CommonModule, DecimalPipe, isPlatformBrowser } from '@angular/common';
 import { HttpClientModule, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SalarySlipService, SalarySlipDto } from '../../../core/services/salary-slip.service';
@@ -28,6 +28,8 @@ export class SalarySlipComponent implements OnInit {
   month?: number;
   year?: number;
 
+  isBrowser = false; // flag for browser-only execution
+
   months = [
     { value: 1, name: 'January' }, { value: 2, name: 'February' },
     { value: 3, name: 'March' }, { value: 4, name: 'April' },
@@ -41,55 +43,70 @@ export class SalarySlipComponent implements OnInit {
     private salaryService: SalarySlipService,
     private route: ActivatedRoute,
     private router: Router,
-    private ngZone: NgZone
+    @Inject(PLATFORM_ID) private platformId: Object,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    combineLatest([this.route.paramMap, this.route.queryParamMap])
-      .pipe(take(1))
-      .subscribe(([params, queryParams]) => {
-        const idParam = params.get('id');
-        this.userId = idParam ? +idParam : undefined;
+    if (isPlatformBrowser(this.platformId)) {
+      // Defer execution to avoid NG0100 error
+      setTimeout(() => {
+        this.isBrowser = true;
 
-        const monthParam = queryParams.get('month');
-        const yearParam = queryParams.get('year');
-        this.month = monthParam ? +monthParam : undefined;
-        this.year = yearParam ? +yearParam : undefined;
+        combineLatest([this.route.paramMap, this.route.queryParamMap])
+          .pipe(take(1))
+          .subscribe(([params, queryParams]) => {
+            const idParam = params.get('id');
+            this.userId = idParam ? +idParam : undefined;
 
-        if (this.userId !== undefined) {
-          this.loadSalarySlips(this.userId, this.month, this.year);
-        } else {
-          this.salarySlips = [];
-          this.noData = true;
-        }
+            const monthParam = queryParams.get('month');
+            const yearParam = queryParams.get('year');
+            this.month = monthParam ? +monthParam : undefined;
+            this.year = yearParam ? +yearParam : undefined;
+
+            if (this.userId !== undefined) {
+              this.loadSalarySlips(this.userId, this.month, this.year);
+            } else {
+              this.salarySlips = [];
+              this.noData = true;
+            }
+
+            // Force Angular to update the view immediately
+            this.cdr.markForCheck();
+          });
       });
+    }
   }
 
   loadSalarySlips(userId?: number, month?: number, year?: number) {
-    this.loading = true;
-    this.noData = false;
-    this.salarySlips = [];
+  this.loading = true;
+  this.noData = false;
+  this.salarySlips = [];
 
-    this.salaryService.getSalarySlips(userId, month, year)
-      .pipe(take(1))
-      .subscribe({
-        next: (res: SalarySlipDto[]) => {
-          this.ngZone.run(() => {
-            this.salarySlips = Array.isArray(res) ? res : [];
-            this.loading = false;
-            this.noData = this.salarySlips.length === 0;
-          });
-        },
-        error: (err: HttpErrorResponse) => {
-          this.ngZone.run(() => {
-            console.error('Salary Slip API Error:', err.message);
-            this.salarySlips = [];
-            this.loading = false;
-            this.noData = true;
-          });
-        }
-      });
+  if (!this.isBrowser) {
+    this.loading = false;
+    this.noData = true;
+    return;
   }
+
+  this.salaryService.getSalarySlips(userId, month, year)
+    .pipe(take(1))
+    .subscribe({
+      next: (res: SalarySlipDto[]) => {
+        this.salarySlips = Array.isArray(res) ? [...res] : [];
+        this.loading = false;
+        this.noData = this.salarySlips.length === 0;
+        this.cdr.markForCheck(); // ← ADD THIS
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error('Salary Slip API Error:', err.message);
+        this.salarySlips = [];
+        this.loading = false;
+        this.noData = true;
+        this.cdr.markForCheck(); // ← AND THIS
+      }
+    });
+}
 
   refreshSlips(month?: number, year?: number) {
     this.month = month ?? this.month;
@@ -118,13 +135,11 @@ export class SalarySlipComponent implements OnInit {
 
     const doc = new jsPDF();
 
-    // Header with username and month/year
     doc.setFontSize(16);
     doc.text(`Salary Slip for ${slip.userName || 'Unknown User'}`, 14, 20);
     doc.setFontSize(12);
     doc.text(`Month: ${this.getMonthName(slip.salaryMonth)} / ${slip.salaryYear}`, 14, 28);
 
-    // Earnings table
     (doc as any).autoTable({
       startY: 35,
       head: [['Earnings', 'Amount']],
@@ -138,7 +153,6 @@ export class SalarySlipComponent implements OnInit {
 
     let finalY = (doc as any).lastAutoTable.finalY + 5;
 
-    // Bonus
     if (slip.bonusDetails) {
       const bonusRows = this.parseDetails(slip.bonusDetails).map(b => [b.title, b.amount]);
       bonusRows.push(['Total Bonus', slip.totalBonus]);
@@ -150,7 +164,6 @@ export class SalarySlipComponent implements OnInit {
       finalY = (doc as any).lastAutoTable.finalY + 5;
     }
 
-    // Deductions
     if (slip.deductionDetails) {
       const deductionRows = this.parseDetails(slip.deductionDetails).map(d => [d.title, d.amount]);
       deductionRows.push(['Total Deduction', slip.totalDeduction]);
@@ -162,7 +175,6 @@ export class SalarySlipComponent implements OnInit {
       finalY = (doc as any).lastAutoTable.finalY + 5;
     }
 
-    // Net Salary
     doc.setFontSize(14);
     doc.text(`Net Salary: ৳ ${slip.netSalary}`, 14, finalY + 10);
 

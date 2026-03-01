@@ -1,6 +1,6 @@
-import { Component, OnInit, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, HostListener, NgZone, ChangeDetectorRef } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Needed for [(ngModel)]
+import { FormsModule } from '@angular/forms';
 import { AttendanceCalendarComponent } from '../attendance-calendar/attendance-calendar.component';
 import { User } from '../../../core/services/user.service';
 import { EditSalaryService, UserSalary } from '../../../core/services/edit-salary.service';
@@ -19,14 +19,15 @@ export class DashboardViewComponent implements OnInit {
   isBrowser: boolean = false;
   loadingSalary: boolean = false;
 
-  // Top navigation state
   showProfileDropdown: boolean = false;
-  hasNotifications: boolean = true; // Toggle dynamically from API if needed
+  hasNotifications: boolean = true;
   searchQuery: string = '';
 
   constructor(
     private salaryService: EditSalaryService,
-    private router: Router, // private is fine
+    private router: Router,
+    private ngZone: NgZone,           // ← ADDED
+    private cdr: ChangeDetectorRef,   // ← ADDED
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
 
@@ -47,29 +48,35 @@ export class DashboardViewComponent implements OnInit {
       roleName: localStorage.getItem('userRole') || '',
       userName: localStorage.getItem('userName') || '',
       phone: localStorage.getItem('phone') || '',
-      profilePic: localStorage.getItem('profilePic') || '' // optional
+      profilePic: localStorage.getItem('profilePic') || ''
     };
 
     this.loadSalary(Number(userId));
   }
 
-  // Load salary info
   loadSalary(userId: number): void {
     this.loadingSalary = true;
+    this.cdr.markForCheck();  // ← trigger spinner immediately
+
     this.salaryService.getSalaryById(userId).subscribe({
       next: (response) => {
-        this.salary = response && response.length > 0 ? response[0] : null;
-        this.loadingSalary = false;
+        this.ngZone.run(() => {                                      // ← ADDED
+          this.salary = response?.length > 0 ? response[0] : null;
+          this.loadingSalary = false;
+          this.cdr.markForCheck();                                   // ← ADDED
+        });
       },
       error: (error) => {
         console.error('Error fetching salary:', error);
-        this.salary = null;
-        this.loadingSalary = false;
+        this.ngZone.run(() => {                                      // ← ADDED
+          this.salary = null;
+          this.loadingSalary = false;
+          this.cdr.markForCheck();                                   // ← ADDED
+        });
       }
     });
   }
 
-  // Compute total salary
   getTotalSalary(): number {
     if (!this.salary) return 0;
     return (
@@ -81,7 +88,6 @@ export class DashboardViewComponent implements OnInit {
     );
   }
 
-  // Top nav actions
   logout(): void {
     if (!this.isBrowser) return;
     localStorage.clear();
@@ -93,15 +99,13 @@ export class DashboardViewComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/dashboard']); // or window.history.back()
+    this.router.navigate(['/dashboard']);
   }
 
   onSearchChange(query: string): void {
     this.searchQuery = query;
-    // Optional: call search API or filter
   }
 
-  // CTRL + / shortcut for search focus
   @HostListener('window:keydown', ['$event'])
   handleKeyDown(event: KeyboardEvent) {
     if ((event.ctrlKey || event.metaKey) && event.key === '/') {
